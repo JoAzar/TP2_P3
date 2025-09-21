@@ -3,8 +3,7 @@ package Grafo;
 import Usuario.Usuario;
 
 public class Arista implements Comparable<Arista> {
-    private Usuario u1;
-    private Usuario u2;
+    private Usuario u1, u2;
     private int peso;
 
     public Arista(Usuario u1, Usuario u2, int peso) {
