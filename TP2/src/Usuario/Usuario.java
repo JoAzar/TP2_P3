@@ -15,7 +15,7 @@ public class Usuario {
     }
 
     private String validar(String n) {
-		if(n.isEmpty() || n.equals(null)) {
+		if(n==null || n.isEmpty()) {
 			throw new IllegalArgumentException("Error, nombre de usuario: {"+n+"} inválido");
 		}
 		return n;

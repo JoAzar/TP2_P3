@@ -25,4 +25,16 @@ public class Arista implements Comparable<Arista> {
     public String toString() {
         return u1 + " --(" + peso + ")--> " + u2;
     }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Arista otra = (Arista) obj;
+        return (u1.equals(otra.u1) && u2.equals(otra.u2)) || (u1.equals(otra.u2) && u2.equals(otra.u1));
+    }
+
+    @Override
+    public int hashCode() {
+        return u1.hashCode() + u2.hashCode();
+    }
 }

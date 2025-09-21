@@ -2,7 +2,7 @@ package Interfaz;
 
 import Grafo.Grafo;
 import Usuario.Usuario;
-import org.openstreetmap.gui.jmapviewer.JMapViewer;
+import org.openstreetmap.gui.jmapviewer.*;
 import javax.swing.*;
 
 public class Main {
@@ -18,5 +18,12 @@ public class Main {
         g.AgregarVertice(u3);
         g.AgregarVertice(u4);
         
+        jMap mapaGrafo= new jMap(-36, -52);
+        mapaGrafo.agregarNodo(-36, -52, 0.01);
+        mapaGrafo.agregarNodo(-36.2, -52.2, 0.01);
+        mapaGrafo.agregarArista(-36, -52, -36.2, -52.2);
+        mapaGrafo.agregarNodo(-35.8, -52.2, 0.01);
+        mapaGrafo.agregarArista(-35.8, -52.2, -36.2, -52.2);
+        mapaGrafo.agregarArista(-35.8, -52.2, -36, -52);
     }
 }

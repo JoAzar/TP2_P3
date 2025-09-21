@@ -10,6 +10,7 @@ public class Grafo {
 
     public Grafo(int capacidadInicial) {
         vertices = new ArrayList<>(capacidadInicial);
+        aristas = new ArrayList<>(capacidadInicial);
     }
 
     public void AgregarVertice(Usuario u) {
@@ -26,4 +27,5 @@ public class Grafo {
 	private boolean existeArista(Usuario u1, Usuario u2) {
 		return aristas.contains(new Arista(u1,u2, AlgoritmoSimilar.calcularSimilaridad(u1, u2)));
 	}
+	
 }
