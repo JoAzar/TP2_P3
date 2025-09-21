@@ -3,8 +3,7 @@ package Grafo;
 import Usuario.Usuario;
 
 public class Arista implements Comparable<Arista> {
-    private Usuario u1;
-    private Usuario u2;
+    private Usuario u1, u2;
     private int peso;
 
     public Arista(Usuario u1, Usuario u2, int peso) {
@@ -25,5 +24,17 @@ public class Arista implements Comparable<Arista> {
     @Override
     public String toString() {
         return u1 + " --(" + peso + ")--> " + u2;
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Arista otra = (Arista) obj;
+        return (u1.equals(otra.u1) && u2.equals(otra.u2)) || (u1.equals(otra.u2) && u2.equals(otra.u1));
+    }
+
+    @Override
+    public int hashCode() {
+        return u1.hashCode() + u2.hashCode();
     }
 }
