@@ -17,6 +17,7 @@ public class jMap{
         frame.add(map);
         frame.setVisible(true);
     }
+    //REPRESENTAR EL GRAFO EN UN MAPA 
     public void agregarNodo(double lat, double lon, double radio) {
         MapMarkerCircle nodo = new MapMarkerCircle(new Coordinate(lat, lon), radio);
         nodo.setBackColor(java.awt.Color.RED); // color del nodo
