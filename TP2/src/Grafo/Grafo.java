@@ -27,5 +27,10 @@ public class Grafo {
 	private boolean existeArista(Usuario u1, Usuario u2) {
 		return aristas.contains(new Arista(u1,u2, AlgoritmoSimilar.calcularSimilaridad(u1, u2)));
 	}
+    //llamada a clase similaridad (grafo no debería encargarse, no?)
+    public int calcularSimilaridad(Usuario u1, Usuario u2) {
+    
+        return AlgoritmoSimilar.calcularSimilaridad(u1, u2); 
+    }
 	
 }

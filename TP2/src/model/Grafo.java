@@ -17,7 +17,7 @@ public class Grafo {
     public void agregarArista(int origen, int destino, int peso) {
     	aristas.add(new Arista(origen, destino, peso));
     }
-    
+    //ups hay  clase grafo repetida ¡CUAL VORRAMOS?
     
     // Getters
     public int getNumVertices() {
