@@ -20,7 +20,6 @@ public class Presenter implements ViewListener {
         this.vista = vista;
         this.usuarios = new ArrayList<>();
         this.vista.crearListener(this);
-        vista.crearFrame();
     }
     
     // [Boton agregarUsuario] Se le pide la info del usuario, crea un objeto y lo guarda.
