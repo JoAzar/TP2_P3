@@ -1,53 +1,37 @@
 package model;
 
+import java.util.Map;
+
 public class Usuario {
-	
-	private final String nombre;
-    private final int iTango, iFolklore, iRock, iUrbano;
-    
-    // Constructor
-    public Usuario (String nombre, int iTango, int iFolklore, int iRock, int iUrbano){
-    	this.nombre = validarNombre(nombre);
-        this.iTango = validarInteres(iTango);
-        this.iFolklore = validarInteres(iFolklore);
-        this.iRock = validarInteres(iRock);
-        this.iUrbano = validarInteres(iUrbano);
-    }
+	    private String _nombre;
+	    private Map<String, Integer> _gustos; //ej: {"rock": 5, "pop": 2, "jazz": 3}
 
-    // Se valida que el nombre pasado por parametro sea correcto.
-    private String validarNombre(String n) {
-		if(n == null || n.isEmpty()) {
-			throw new IllegalArgumentException("Error, nombre de usuario: {"+n+"} inválido");
-		}
-		return n;
-	}
-    
-    // Se valida que el interes ingresado esté dentro de los limites (1-5)
-	private int validarInteres(int i){
-        if(i < 1 || i > 5) {
-        	throw new IllegalArgumentException("Error en el parámetro interés de usuario: {"+ i +"} no es un parámetro válido");
-        }
-        return i;
-    }
-	
-	// Getters
-	public int getTango() {
-		return iTango;
-	}
-	
-	public int getFolklore() {
-		return iFolklore;
-	}
-	
-	public int getRock() {
-		return iRock;
-	}
-	
-	public int getUrbano() {
-		return iUrbano;
-	}
+	    public Usuario(String nombre, Map<String, Integer> gustos) {
 
-	public String getNombre() {
-		return nombre;
-	}
+    	    if (nombre == null || nombre.isBlank()) throw new IllegalArgumentException("El nombre del usuario no puede ser nulo o vacío");
+    	    if (gustos == null || gustos.isEmpty()) throw new IllegalArgumentException("El usuario debe tener al menos un gusto musical");
+	        _nombre = nombre;
+	        _gustos = gustos;
+	    }
+
+	    public String getNombre() {return _nombre;}
+	    public Map<String, Integer> getGustos() {return _gustos;}
+
+	    public int afinidadCon(Usuario otro) {
+	        int total = 0;
+	        int contador = 0;
+	        for(String genero : _gustos.keySet()) {
+	            if(otro.getGustos().containsKey(genero)) {
+	                int diff = Math.abs(_gustos.get(genero) - otro.getGustos().get(genero));
+	                total += (5 - diff); //más parecido → mayor afinidad
+	                contador++;
+	            }
+	        }
+	        return contador > 0 ? total / contador : 0;
+	    }
+
+	    @Override
+	    public String toString() {
+	        return _nombre;
+	    }
 }

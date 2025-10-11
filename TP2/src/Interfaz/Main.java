@@ -1,39 +1,31 @@
 package Interfaz;
 
-import Grafo.Grafo;
-import Usuario.Usuario;
-import org.openstreetmap.gui.jmapviewer.*;
-import javax.swing.*;
+import model.Grafo;
+import model.Usuario;
+import java.util.*;
 
 public class Main {
     
     public static void main(String[] args) {
-        //EXPERIMENTACION (Esto tendría que ir en TEST no te parece?!?)
-        Usuario u1= new Usuario("messi",4,4,4,4);
-        Usuario u2= new Usuario("josé ricardo", 1,5,1,3);
-        Usuario u3= new Usuario("abc",3,2,4,5);
-        Usuario u4= new Usuario("abc",1,4,2,4);  
-        Grafo g = new Grafo(4);
-        g.AgregarVertice(u1);
-        g.AgregarVertice(u2);
-        g.AgregarVertice(u3);
-        g.AgregarVertice(u4);
-        
-        //BONDIOLA
 
-        jMap mapaGrafo= new jMap(-36, -52);
-        mapaGrafo.agregarNodo(-36, -52, 0.01);
-        mapaGrafo.agregarNodo(-36.2, -52.2, 0.01);
-        mapaGrafo.agregarArista(-36, -52, -36.2, -52.2);
-        mapaGrafo.agregarNodo(-35.8, -52.2, 0.01);
-        mapaGrafo.agregarArista(-35.8, -52.2, -36.2, -52.2);
-        mapaGrafo.agregarArista(-35.8, -52.2, -36, -52);
+        Usuario primer_usuario = new Usuario("Red", Map.of("rock", 5, "pop", 2, "jazz", 1));
+        Usuario segundo_usuario = new Usuario("Orion", Map.of("rock", 4, "pop", 2, "metal", 5));
+        Usuario tercer_usuario = new Usuario("Luna", Map.of("rock", 1, "pop", 5, "jazz", 4));
+        Grafo g = new Grafo();
+        g.agregarVertice(primer_usuario);
+        g.agregarVertice(segundo_usuario);
+        g.agregarVertice(tercer_usuario);
 
-        //prueba similaridad
-        System.out.println("Similaridad u1 con u2: "+g.calcularSimilaridad(u1, u2));
-        System.out.println("Similaridad u1 con u3: "+ g.calcularSimilaridad(u1, u3));
-        //Alguien está leyendo esto?
-        System.out.println("Similaridad u1 con u3: "+g.calcularSimilaridad(u1, u4));
-
+        //Conectamos usuarios según su afinidad
+        List<Usuario> usuarios = g.getVertices();
+        for (int i = 0; i < usuarios.size(); i++) {
+            for (int j = i + 1; j < usuarios.size(); j++) {
+                int afinidad = usuarios.get(i).afinidadCon(usuarios.get(j));
+                if (afinidad > 0) {
+                    g.agregarArista(usuarios.get(i), usuarios.get(j), afinidad);
+                }
+            }
+        }
     }
+
 }

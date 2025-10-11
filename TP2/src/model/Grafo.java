@@ -1,30 +1,34 @@
 package model;
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class Grafo {
+    private List<Usuario> vertice;
+    private List<Arista> arista;
+
+    public Grafo() {
+        vertice = new ArrayList<>();
+        arista = new ArrayList<>();
+    }
+
+    public void agregarVertice(Usuario usuario) {
+    	if(usuario == null) throw new IllegalArgumentException("El usuario no puede ser nulo");
+    	if(!vertice.contains(usuario)) vertice.add(usuario);
+    }
+
+    public void agregarArista(Usuario origen, Usuario destino, int peso) {
+        if(!existeArista(origen, destino)) arista.add(new Arista(origen, destino, peso));
+    }
+    
+    private boolean existeArista(Usuario origen, Usuario destino) {
+        for(Arista a : arista)
+            if(a.getOrigen().equals(origen) && a.getDestino().equals(destino)) return true;
+        return false;
+    }
 	
-	private final int numVertices;
-    private final List<Arista> aristas;
-    
-    public Grafo(int numVertices) {
-    	this.numVertices = numVertices;
-    	this.aristas = new ArrayList<>();
-    }
-    
-    public void agregarArista(int origen, int destino, int peso) {
-    	aristas.add(new Arista(origen, destino, peso));
-    }
-    //ups hay  clase grafo repetida ¡CUAL VORRAMOS?
-    
-    // Getters
-    public int getNumVertices() {
-    	return numVertices;
-    }
-    
-    public List<Arista> getArista(){
-    	return Collections.unmodifiableList(aristas);
-    }
+	public List<Usuario> getVertices() {return vertice;}
+    public List<Arista> getAristas() {return arista;}
+
+
+	
 }
