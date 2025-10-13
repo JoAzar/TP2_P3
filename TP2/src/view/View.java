@@ -144,17 +144,30 @@ public class View extends JFrame{
 		btnEjecutar.setBounds(46, 381, 162, 23);
 		getContentPane().add(btnEjecutar);
 		
+		// De momento no va hasta q este el algoritmo
+		//btnEjecutar.addActionListener(e -> listener.ejecutarAlgoritmo());
+		
+		
 		btnNuevoUsuario.addActionListener(new ActionListener() {
-		    int cantidadUsuarios = 0;
-
 		    public void actionPerformed(ActionEvent e) {
-		        cantidadUsuarios++;
+		        String nombre = fieldNombre.getText().trim();
+		        int tango = (Integer) spinnerTango.getValue();
+		        int urbano = (Integer) spinnerUrbano.getValue();
+		        int rock = (Integer) spinnerRock.getValue();
+		        int folclore = (Integer) spinnerFolclore.getValue();
+
+		        // Guarda el usuario
+		        if (listener != null) {
+		            listener.agregarUsuario(nombre, tango, urbano, rock, folclore);
+		        }
+		    	
+		        // Formatea la pantalla
 		        fieldNombre.setText("");
 		        btnNuevoUsuario.setEnabled(false);
 		        reestablecerBotones(spinnerTango, spinnerUrbano, spinnerRock, spinnerFolclore);
 
 		        // Se habilita el boton de ejecutar si hay al menos 2 usuarios.
-		        if (cantidadUsuarios >= 2) {
+		        if (listener.hayUsuariosSuficientes()) {
 		            btnEjecutar.setEnabled(true);
 		        }
 		    }

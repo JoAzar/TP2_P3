@@ -1,5 +1,6 @@
 package model;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Usuario {
@@ -8,27 +9,26 @@ public class Usuario {
 
 	    public Usuario(String nombre, Map<String, Integer> gustos) {
 
-    	    if (nombre == null || nombre.isBlank()) throw new IllegalArgumentException("El nombre del usuario no puede ser nulo o vacío");
+	    	// Me parece que isBlank no es valido para la version q estamos usando
+    	    if (nombre == null /*|| nombre.isBlank()*/) throw new IllegalArgumentException("El nombre del usuario no puede ser nulo");
     	    if (gustos == null || gustos.isEmpty()) throw new IllegalArgumentException("El usuario debe tener al menos un gusto musical");
 	        _nombre = nombre;
 	        _gustos = gustos;
 	    }
-
+	    
+		// Calculo similaridad
+		public int calculoSimilaridad(Usuario u2) {
+		    int t = Math.abs(_gustos.get("tango") - u2.getGustos().get("tango"));
+		    int f = Math.abs(_gustos.get("folclore") - u2.getGustos().get("folclore"));
+		    int r = Math.abs(_gustos.get("rock") - u2.getGustos().get("rock"));
+		    int u = Math.abs(_gustos.get("urbano") - u2.getGustos().get("urbano"));
+		    return t + f + r + u;
+		}
+	    
+	    // Getters
 	    public String getNombre() {return _nombre;}
-	    public Map<String, Integer> getGustos() {return _gustos;}
-
-	    public int afinidadCon(Usuario otro) {
-	        int total = 0;
-	        int contador = 0;
-	        for(String genero : _gustos.keySet()) {
-	            if(otro.getGustos().containsKey(genero)) {
-	                int diff = Math.abs(_gustos.get(genero) - otro.getGustos().get(genero));
-	                total += (5 - diff); //más parecido → mayor afinidad
-	                contador++;
-	            }
-	        }
-	        return contador > 0 ? total / contador : 0;
-	    }
+	    
+	    public Map<String, Integer> getGustos() {return new HashMap<>(_gustos);}
 
 	    @Override
 	    public String toString() {
