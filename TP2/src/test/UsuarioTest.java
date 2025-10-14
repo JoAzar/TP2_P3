@@ -22,13 +22,13 @@ public class UsuarioTest {
     public void calculoSimilaridadCorrectoTest() {
         Map<String, Integer> gustos1 = new HashMap<>();
         gustos1.put("rock", 2);
-        gustos1.put("jazz", 3);
+        gustos1.put("tango", 3);
         gustos1.put("folclore", 2);
         gustos1.put("urbano", 5);
 
         Map<String, Integer> gustos2 = new HashMap<>();
         gustos2.put("rock", 3);
-        gustos2.put("jazz", 4);
+        gustos2.put("tango", 4);
         gustos2.put("folclore", 1);
         gustos2.put("urbano", 5);
 
@@ -43,13 +43,13 @@ public class UsuarioTest {
     public void calcularSimilaridadConUnGustoFaltante() {
         Map<String, Integer> gustos1 = new HashMap<>();
         gustos1.put("rock", 2);
-        gustos1.put("jazz", 3);
+        gustos1.put("tango", 3);
         gustos1.put("folklore", 2);
         gustos1.put("urbano", 5);
 
         Map<String, Integer> gustos2 = new HashMap<>();
         gustos2.put("rock", 3);
-        gustos2.put("jazz", 4);
+        gustos2.put("tango", 4);
         gustos2.put("folclore", 1);
         gustos2.put("urbano", 5);
 

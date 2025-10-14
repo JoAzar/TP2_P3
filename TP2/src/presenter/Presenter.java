@@ -10,20 +10,20 @@ import view.View;
 import view.ViewListener;
 
 public class Presenter implements ViewListener {
-	private View vista;
-	private List<Usuario> usuarios;
+	private View _vista;
+	private List<Usuario> _usuarios;
     
     public void inicializarInterfazPresenter(View vista) {
-        this.vista = vista;
-        this.usuarios = new ArrayList<>();
-        this.vista.crearListener(this);
+        _vista = vista;
+        _usuarios = new ArrayList<>();
+        _vista.crearListener(this);
     }
     
     // [Boton agregar otra persona] Se le pide la info del usuario, crea un objeto y lo guarda.
     @Override
     public void agregarUsuario(String nombre, int tango, int folclore, int rock, int urbano) {
         Usuario u = new Usuario(nombre, mapDeGustos(tango, folclore, rock, urbano));
-        usuarios.add(u);
+        _usuarios.add(u);
     }
     
 	// [Boton ejecutar] Acá iria para que se calcule lo de los grupos y lo muestre por la view
@@ -38,8 +38,19 @@ public class Presenter implements ViewListener {
     	StringBuilder resultado = new StringBuilder();
         
     }
+    
+	public Grafo crearGrafoCompleto() {
+		Grafo grafo = new Grafo();
 
-    // Crea Map de gustos.
+	    for (Usuario u : _usuarios) {
+	        grafo.agregarVertice(u);
+	    }
+	    
+	    grafo.crearGrafoCompleto();
+	    
+		return grafo;
+	}
+
     private Map<String, Integer> mapDeGustos(int tango, int folclore, int rock, int urbano) {
     	Map<String, Integer> gustos = new HashMap<>();
     	
@@ -51,26 +62,12 @@ public class Presenter implements ViewListener {
     	return gustos;
 	}
     
-    
-    // Chequeo para saber si hay usuarios suficientes para ejecutar el algoritmo
     @Override
 	public boolean hayUsuariosSuficientes() {
-    	if(usuarios.size() >= 2) {
+    	if(_usuarios.size() >= 2) {
     		return true;
     	}
     	return false;
     }
-    
-	public Grafo crearGrafoCompleto() {
-		Grafo grafo = new Grafo();
-
-	    for (Usuario u : usuarios) {
-	        grafo.agregarVertice(u);
-	    }
-	    
-	    grafo.crearGrafoCompleto();
-	    
-		return grafo;
-	}
     
 }

@@ -9,14 +9,10 @@ public class Arista implements Comparable<Arista>{
         _destino = destino;
         _peso = peso;
     }
-
-    public Usuario getOrigen() {return _origen;}
-    public Usuario getDestino() {return _destino;}
-    public int getPeso() {return _peso;}
     
     @Override
     public int compareTo(Arista otraArista) {
-    	return Integer.compare(this._peso, otraArista._peso);
+    	return Integer.compare(_peso, otraArista._peso);
     }
     
     @Override
@@ -28,7 +24,20 @@ public class Arista implements Comparable<Arista>{
     }
 
     @Override
-    public int hashCode() {return _origen.hashCode() + _destino.hashCode();}
+    public int hashCode() {
+    	return _origen.hashCode() + _destino.hashCode();
+    }
     
+    public Usuario getOrigen() {
+    	return _origen;
+    }
+    
+    public Usuario getDestino() {
+    	return _destino;
+    }
+    
+    public int getPeso() {
+    	return _peso;
+    }
     
 }

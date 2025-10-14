@@ -11,28 +11,28 @@ public class Prueba {
     public static void main(String[] args) {
         Map<String, Integer> gustos1 = new HashMap<>();
         gustos1.put("rock", 5);
-        gustos1.put("jazz", 2);
+        gustos1.put("tango", 2);
         gustos1.put("folclore", 1);
         gustos1.put("urbano", 4);
         Usuario u1 = new Usuario("Lucas", gustos1);
 
         Map<String, Integer> gustos2 = new HashMap<>();
         gustos2.put("rock", 4);
-        gustos2.put("jazz", 3);
+        gustos2.put("tango", 3);
         gustos2.put("folclore", 2);
         gustos2.put("urbano", 5);
         Usuario u2 = new Usuario("Maria", gustos2);
 
         Map<String, Integer> gustos3 = new HashMap<>();
         gustos3.put("rock", 1);
-        gustos3.put("jazz", 5);
+        gustos3.put("tango", 5);
         gustos3.put("folclore", 4);
         gustos3.put("urbano", 1);
         Usuario u3 = new Usuario("Marcos", gustos3);
 
         Map<String, Integer> gustos4 = new HashMap<>();
         gustos4.put("rock", 2);
-        gustos4.put("jazz", 4);
+        gustos4.put("tango", 4);
         gustos4.put("folclore", 5);
         gustos4.put("urbano", 2);
         Usuario u4 = new Usuario("Marta", gustos4);

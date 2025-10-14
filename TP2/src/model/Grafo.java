@@ -6,35 +6,43 @@ import java.util.List;
 import java.util.Map;
 
 public class Grafo {
-    private List<Usuario> vertices;
-    private List<Arista> aristas;
+    private List<Usuario> _vertices;
+    private List<Arista> _aristas;
 
     public Grafo() {
-        vertices = new ArrayList<>();
-        aristas = new ArrayList<>();
+        _vertices = new ArrayList<>();
+        _aristas = new ArrayList<>();
     }
 
     public void agregarVertice(Usuario usuario) {
-    	if(usuario == null) throw new IllegalArgumentException("El usuario no puede ser nulo");
-    	if(!vertices.contains(usuario)) vertices.add(usuario);
+    	if(usuario == null) {
+    		throw new IllegalArgumentException("El usuario no puede ser nulo");
+    	}
+    	if(!_vertices.contains(usuario)) {
+    		_vertices.add(usuario);
+    	}
     }
 
     public void agregarArista(Usuario origen, Usuario destino, int peso) {
-        if(!existeArista(origen, destino)) aristas.add(new Arista(origen, destino, peso));
+        if(!existeArista(origen, destino)) {
+        	_aristas.add(new Arista(origen, destino, peso));
+        }
     }
     
-    // Chequeo si existe una arista entre dos vertices
     private boolean existeArista(Usuario origen, Usuario destino) {
-        for(Arista a : aristas)
-            if(a.getOrigen().equals(origen) && a.getDestino().equals(destino)) return true;
+        for(Arista a : _aristas) {
+        	if(a.getOrigen().equals(origen) && a.getDestino().equals(destino)) {
+        		return true;
+        	}
+        }
         return false;
     }
     
     public void crearGrafoCompleto() {
-	    for (int i = 0; i < vertices.size(); i++) {
-	        for (int j = i + 1; j < vertices.size(); j++) {
-	            Usuario u1 = vertices.get(i);
-	            Usuario u2 = vertices.get(j);
+	    for (int i = 0; i < _vertices.size(); i++) {
+	        for (int j = i + 1; j < _vertices.size(); j++) {
+	            Usuario u1 = _vertices.get(i);
+	            Usuario u2 = _vertices.get(j);
 	            int peso = u1.calculoSimilaridad(u2);
 	            agregarArista(u1, u2, peso);
 	        }
@@ -47,14 +55,13 @@ public class Grafo {
     	if(agm.isEmpty()) {
     		return new HashMap<>();
     	}
-    	
-    	// Sacamos la arista mas grande
+
     	Collections.sort(agm, Collections.reverseOrder());
     	agm.remove(0);
     	
     	Map<Usuario, Usuario> padre = inicializarPadres();
     	for(Arista a : agm) {
-    		union(a.getOrigen(), a.getDestino(), padre);
+    		unionSinRaiz(a.getOrigen(), a.getDestino(), padre);
     	}
     	
     	Map<Integer, List<Usuario>> componentesConexas = enumerarComponentes(crearComponentes(padre));
@@ -63,15 +70,14 @@ public class Grafo {
     	return componentesConexas;
     }
     
-    // No sé si va acá o en el Presenter
     public List<Arista> crearAGM() {
         List<Arista> agm = new ArrayList<>();
         
-        Collections.sort(aristas);
-        // union find
+        Collections.sort(_aristas);
+
         Map<Usuario, Usuario> padre = inicializarPadres();
         
-        for(Arista a : aristas) {
+        for(Arista a : _aristas) {
         	Usuario u1 = a.getOrigen();
         	Usuario u2 = a.getDestino();
         	
@@ -80,41 +86,20 @@ public class Grafo {
         	
         	if(raiz1 != raiz2) {
         		agm.add(a);
-        		union(raiz1, raiz2, padre);
+        		unionConRaiz(raiz1, raiz2, padre);
         	}
         	
-        	if(agm.size() == vertices.size() - 1) {
+        	if(agm.size() == _vertices.size() - 1) {
         		break;
         	}
         }
         return agm;
     }
     
-    private Usuario find(Usuario user, Map<Usuario, Usuario> padre) {
-    	while(padre.get(user) != user) {
-    		user = padre.get(user);
-    	}
-    	return user;
-    }
-    
-    private void union(Usuario u1, Usuario u2, Map<Usuario, Usuario> padre) {
-    	Usuario raiz1 = find(u1, padre);
-    	Usuario raiz2 = find(u2, padre);
-    	padre.put(raiz1, raiz2);
-    }
-    
-    private Map<Usuario, Usuario> inicializarPadres(){
-    	Map<Usuario, Usuario> padre = new HashMap<>();
-    	for(Usuario u : vertices) {
-    		padre.put(u, u);
-    	}
-    	return padre;
-    }
-    
     private Map<Usuario, List<Usuario>> crearComponentes(Map<Usuario, Usuario> padre){
         Map<Usuario, List<Usuario>> comp = new HashMap<>();
         
-        for (Usuario u : vertices) {
+        for (Usuario u : _vertices) {
             Usuario raiz = find(u, padre);
             if (!comp.containsKey(raiz)) {
                 comp.put(raiz, new ArrayList<>());
@@ -136,11 +121,38 @@ public class Grafo {
         
         return comp;
     }
+    
+    private Usuario find(Usuario user, Map<Usuario, Usuario> padre) {
+    	while(padre.get(user) != user) {
+    		user = padre.get(user);
+    	}
+    	return user;
+    }
+    
+    private void unionSinRaiz(Usuario u1, Usuario u2, Map<Usuario, Usuario> padre) {
+    	Usuario raiz1 = find(u1, padre);
+    	Usuario raiz2 = find(u2, padre);
+    	padre.put(raiz1, raiz2);
+    }
+    
+    private void unionConRaiz(Usuario r1, Usuario r2, Map<Usuario, Usuario> padre) {
+    	padre.put(r1, r2);
+    }
+    
+    private Map<Usuario, Usuario> inicializarPadres(){
+    	Map<Usuario, Usuario> padre = new HashMap<>();
+    	for(Usuario u : _vertices) {
+    		padre.put(u, u);
+    	}
+    	return padre;
+    }
+
+	public List<Usuario> getVertices() {
+		return new ArrayList<Usuario>(_vertices);
+	}
 	
-    // Getters
-	public List<Usuario> getVertices() {return new ArrayList<Usuario>(vertices);}
-    public List<Arista> getAristas() {return new ArrayList<Arista>(aristas);}
-
-
+    public List<Arista> getAristas() {
+    	return new ArrayList<Arista>(_aristas);
+    }
 	
 }

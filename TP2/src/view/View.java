@@ -9,10 +9,10 @@ import java.awt.event.ActionEvent;
 
 @SuppressWarnings("serial")
 public class View extends JFrame{
-	private ViewListener listener;
-	private JTextField fieldNombre;
+	private ViewListener _listener;
+	private JTextField _fieldNombre;
 	
-	private JTextArea panelGrupos;
+	private JTextArea _panelGrupos;
 
 	
 	public View() {
@@ -21,18 +21,16 @@ public class View extends JFrame{
 	}
 	
 	private void initialize() {
-		
-		// Config. general
 		setTitle("Grupos por similaridad musical.");
-		setBounds(100, 100, 700, 500);    //posición X e Y, tamaño ancho | alto
+		setBounds(100, 100, 700, 500); 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().setLayout(null);
 		
 		// Texto del NOMBRE y campo para completar.
-		fieldNombre = new JTextField();
-		fieldNombre.setBounds(46, 68, 162, 20);
-		getContentPane().add(fieldNombre);
-		fieldNombre.setColumns(10);
+		_fieldNombre = new JTextField();
+		_fieldNombre.setBounds(46, 68, 162, 20);
+		getContentPane().add(_fieldNombre);
+		_fieldNombre.setColumns(10);
 		
 		JTextPane textNombre = new JTextPane();
 		textNombre.setBackground(new Color(192, 192, 192));
@@ -76,7 +74,7 @@ public class View extends JFrame{
 		spinnerTango.setBounds(34, 231, 52, 20);
 		getContentPane().add(spinnerTango);
 		
-		// Texto FOLKLORE
+		// Texto FOLCLORE
 		JTextPane textFolclore = new JTextPane();
 		textFolclore.setEditable(false);
 		textFolclore.setText("  Folclore:");
@@ -129,10 +127,10 @@ public class View extends JFrame{
 		getContentPane().add(btnNuevoUsuario);
 		
 		// Habilita el botón de agregar otra persona solo si hay un caracter (no admite espacios vacíos)
-		fieldNombre.addKeyListener(new KeyAdapter() {
+		_fieldNombre.addKeyListener(new KeyAdapter() {
 		    @Override
 		    public void keyReleased(KeyEvent e) {
-		        btnNuevoUsuario.setEnabled(!fieldNombre.getText().trim().isEmpty()); 
+		        btnNuevoUsuario.setEnabled(!_fieldNombre.getText().trim().isEmpty()); 
 		    }
 		});
 		
@@ -149,24 +147,24 @@ public class View extends JFrame{
 		
 		btnNuevoUsuario.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
-		        String nombre = fieldNombre.getText().trim();
+		        String nombre = _fieldNombre.getText().trim();
 		        int tango = (Integer) spinnerTango.getValue();
 		        int urbano = (Integer) spinnerUrbano.getValue();
 		        int rock = (Integer) spinnerRock.getValue();
 		        int folclore = (Integer) spinnerFolclore.getValue();
 
 		        // Guarda el usuario
-		        if (listener != null) {
-		            listener.agregarUsuario(nombre, tango, urbano, rock, folclore);
+		        if (_listener != null) {
+		            _listener.agregarUsuario(nombre, tango, urbano, rock, folclore);
 		        }
 		    	
 		        // Formatea la pantalla
-		        fieldNombre.setText("");
+		        _fieldNombre.setText("");
 		        btnNuevoUsuario.setEnabled(false);
 		        reestablecerBotones(spinnerTango, spinnerUrbano, spinnerRock, spinnerFolclore);
 
 		        // Se habilita el boton de ejecutar si hay al menos 2 usuarios.
-		        if (listener.hayUsuariosSuficientes()) {
+		        if (_listener.hayUsuariosSuficientes()) {
 		            btnEjecutar.setEnabled(true);
 		        }
 		    }
@@ -190,10 +188,10 @@ public class View extends JFrame{
 	}
 	
 	public void mostrarResultado(String texto) {
-	    panelGrupos.setText(texto);
+	    _panelGrupos.setText(texto);
 	}
 	
     public void crearListener(ViewListener listener) {
-        this.listener = listener;
+        this._listener = listener;
     }
 }
