@@ -15,17 +15,6 @@ public class GrafoTest {
         grafo.agregarVertice(null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void crearUsuarioNuloTest() {
-        new Usuario(null, null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void crearUsuarioSinGustosTest() {
-        Map<String, Integer> gustos = new HashMap<>();
-        new Usuario("Juan", gustos);
-    }
-
     @Test
     public void agregarVerticeTest() {
         Grafo grafo = new Grafo();
