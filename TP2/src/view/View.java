@@ -2,13 +2,12 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
 
+@SuppressWarnings("serial")
 public class View extends JFrame{
 	private ViewListener listener;
 	private JTextField fieldNombre;
@@ -129,11 +128,11 @@ public class View extends JFrame{
 		btnNuevoUsuario.setBounds(46, 351, 162, 23);
 		getContentPane().add(btnNuevoUsuario);
 		
-		// Habilita el botón de agregar otra persona solo si hay un nombre escrito
+		// Habilita el botón de agregar otra persona solo si hay un caracter (no admite espacios vacíos)
 		fieldNombre.addKeyListener(new KeyAdapter() {
 		    @Override
 		    public void keyReleased(KeyEvent e) {
-		        btnNuevoUsuario.setEnabled(!fieldNombre.getText().trim().isEmpty());
+		        btnNuevoUsuario.setEnabled(!fieldNombre.getText().trim().isEmpty()); 
 		    }
 		});
 		

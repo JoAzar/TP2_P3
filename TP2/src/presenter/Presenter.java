@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import model.Arista;
 import model.Grafo;
 import model.Usuario;
 import view.View;
@@ -27,12 +26,16 @@ public class Presenter implements ViewListener {
         usuarios.add(u);
     }
     
-	// [Boton ejecutar] Acá iria para que se calcule lo de los grupos
+	// [Boton ejecutar] Acá iria para que se calcule lo de los grupos y lo muestre por la view
     @Override
     public void ejecutarAlgoritmo() {
 
         // Se crea el grafo completo
     	Grafo grafoCompleto = crearGrafoCompleto();
+    	
+    	Map<Integer, List<Usuario>> grupos = grafoCompleto.crearComponentesConexas();
+    	
+    	StringBuilder resultado = new StringBuilder();
         
     }
 
@@ -64,16 +67,8 @@ public class Presenter implements ViewListener {
 	    for (Usuario u : usuarios) {
 	        grafo.agregarVertice(u);
 	    }
-
-	    // Calculo de peso para las aristas
-	    for (int i = 0; i < usuarios.size(); i++) {
-	        for (int j = i + 1; j < usuarios.size(); j++) {
-	            Usuario u1 = usuarios.get(i);
-	            Usuario u2 = usuarios.get(j);
-	            int peso = u1.calculoSimilaridad(u2);
-	            grafo.agregarArista(u1, u2, peso);
-	        }
-	    }
+	    
+	    grafo.crearGrafoCompleto();
 	    
 		return grafo;
 	}

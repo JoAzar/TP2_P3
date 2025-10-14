@@ -1,7 +1,6 @@
 package model;
-import model.Usuario;
 
-public class Arista {
+public class Arista implements Comparable<Arista>{
     private Usuario _origen, _destino;
     private int _peso;
 
@@ -14,7 +13,11 @@ public class Arista {
     public Usuario getOrigen() {return _origen;}
     public Usuario getDestino() {return _destino;}
     public int getPeso() {return _peso;}
-    public void setPeso(int peso) {_peso = peso;}
+    
+    @Override
+    public int compareTo(Arista otraArista) {
+    	return Integer.compare(this._peso, otraArista._peso);
+    }
     
     @Override
     public boolean equals(Object obj) {

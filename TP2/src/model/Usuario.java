@@ -9,20 +9,28 @@ public class Usuario {
 
 	    public Usuario(String nombre, Map<String, Integer> gustos) {
 
-	    	// Me parece que isBlank no es valido para la version q estamos usando
-    	    if (nombre == null /*|| nombre.isBlank()*/) throw new IllegalArgumentException("El nombre del usuario no puede ser nulo");
-    	    if (gustos == null || gustos.isEmpty()) throw new IllegalArgumentException("El usuario debe tener al menos un gusto musical");
+    	    if (nombre == null) throw new IllegalArgumentException("El nombre del usuario no puede ser nulo");
+    	    if (gustos == null || gustos.isEmpty() || gustos.size() != 4) throw new IllegalArgumentException("El usuario debe tener al menos un gusto musical");
 	        _nombre = nombre;
 	        _gustos = gustos;
 	    }
 	    
 		// Calculo similaridad
 		public int calculoSimilaridad(Usuario u2) {
-		    int t = Math.abs(_gustos.get("tango") - u2.getGustos().get("tango"));
-		    int f = Math.abs(_gustos.get("folclore") - u2.getGustos().get("folclore"));
-		    int r = Math.abs(_gustos.get("rock") - u2.getGustos().get("rock"));
-		    int u = Math.abs(_gustos.get("urbano") - u2.getGustos().get("urbano"));
-		    return t + f + r + u;
+		    int total = 0;
+		    String[] generos = {"rock", "tango", "folclore", "urbano"};
+
+		    for (String g : generos) {
+		        Integer miValor = _gustos.get(g);
+		        Integer otroValor = u2.getGustos().get(g);
+
+		        if (miValor == null || otroValor == null) {
+		            throw new IllegalArgumentException("Usuario sin valor definido para el género " + g);
+		        }
+
+		        total += Math.abs(miValor - otroValor);
+		    }
+		    return total;
 		}
 	    
 	    // Getters
