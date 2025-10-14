@@ -141,10 +141,15 @@ public class View extends JFrame{
 		btnEjecutar.setBounds(46, 381, 162, 23);
 		getContentPane().add(btnEjecutar);
 		
-		// De momento no va hasta q este el algoritmo
-		//btnEjecutar.addActionListener(e -> listener.ejecutarAlgoritmo());
+		// BOTON REINICIAR
+		JButton btnReiniciar = new JButton("Reiniciar");
+		btnReiniciar.setFont(new Font("Arial", Font.BOLD, 12));
+		btnReiniciar.setEnabled(false);
+		btnReiniciar.setBounds(46, 411, 162, 23);
+		getContentPane().add(btnReiniciar);
 		
-		
+		// LISTENERS
+						
 		btnNuevoUsuario.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
 		        String nombre = _fieldNombre.getText().trim();
@@ -167,9 +172,23 @@ public class View extends JFrame{
 		        if (_listener.hayUsuariosSuficientes()) {
 		            btnEjecutar.setEnabled(true);
 		        }
+		        
+				if(_listener.sePuedeHabilitarReinicio()) {
+					btnReiniciar.setEnabled(true);
+				}
 		    }
 		});
+		
+		btnReiniciar.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		    	_listener.reiniciarSistema();
+		    	btnReiniciar.setEnabled(false);
+		    }
+		 });
         
+		// De momento no va hasta q este el algoritmo
+		//btnEjecutar.addActionListener(e -> listener.ejecutarAlgoritmo());
+		
 		mostrar();
 	}
 
@@ -187,8 +206,8 @@ public class View extends JFrame{
 		
 	}
 	
-	public void mostrarResultado(String texto) {
-	    _panelGrupos.setText(texto);
+	public void avisoReinicioCorrecto(String mensaje) {
+	    JOptionPane.showMessageDialog(this, mensaje);
 	}
 	
     public void crearListener(ViewListener listener) {

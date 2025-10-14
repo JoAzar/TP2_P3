@@ -39,6 +39,16 @@ public class Presenter implements ViewListener {
         
     }
     
+    // [Boton reiniciar] Reinicia todo
+    @Override
+    public void reiniciarSistema() {
+    	_usuarios.clear();
+    	
+    	// Debería limpiar lso resultados también
+    	
+    	
+    }
+    
 	public Grafo crearGrafoCompleto() {
 		Grafo grafo = new Grafo();
 
@@ -65,6 +75,14 @@ public class Presenter implements ViewListener {
     @Override
 	public boolean hayUsuariosSuficientes() {
     	if(_usuarios.size() >= 2) {
+    		return true;
+    	}
+    	return false;
+    }
+    
+    @Override
+    public boolean sePuedeHabilitarReinicio() {
+    	if(_usuarios.size() == 1) {
     		return true;
     	}
     	return false;
