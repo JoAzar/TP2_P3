@@ -1,32 +1,40 @@
 package view;
 
 import javax.swing.*;
+
+import model.Usuario;
+
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.List;
+import java.util.Map;
 import java.awt.event.ActionEvent;
 
-@SuppressWarnings("serial")
 public class View extends JFrame{
 	private ViewListener _listener;
 	private JTextField _fieldNombre;
-	
 	private JTextArea _panelGrupos;
+    private JPanel panelResultado;
 
 	
 	public View() {
 		getContentPane().setBackground(new Color(192, 192, 192));
-		initialize();
+		inicializar();
 	}
 	
-	private void initialize() {
-		setTitle("Grupos por similaridad musical.");
+	private void inicializar() {
+		setTitle("Grupos de similaridad por gustos musicales");
 		setBounds(100, 100, 700, 500); 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().setLayout(null);
 		
-		// Texto del NOMBRE y campo para completar.
+		//ESTE ES EL PANEL DE LOS GRUPOS LUEGO DE TOCAR EL BOTON para ver grupos
+		_panelGrupos = new JTextArea();
+	    _panelGrupos.setEditable(false);
+	    _panelGrupos.setBackground(Color.BLACK);
+	    
 		_fieldNombre = new JTextField();
 		_fieldNombre.setBounds(46, 68, 162, 20);
 		getContentPane().add(_fieldNombre);
@@ -40,27 +48,23 @@ public class View extends JFrame{
 		textNombre.setBounds(62, 43, 146, 20);
 		getContentPane().add(textNombre);
 		
-		// PANEL DERECHO donde se muestra los grupos.
-		JPanel panelResultado = new JPanel();
+		panelResultado = new JPanel();
 		panelResultado.setBackground(new Color(255, 255, 255));
 		panelResultado.setBounds(260, 0, 424, 461);
 		getContentPane().add(panelResultado);
 		
-		// Texto de INTERESES
 		JTextPane textoIntereses = new JTextPane();
 		textoIntereses.setBackground(new Color(192, 192, 192));
 		textoIntereses.setEditable(false);
 		textoIntereses.setFont(new Font("Arial", Font.BOLD, 13));
-		textoIntereses.setText("  ¿Qué tan interesado está por los\r\n     siguientes géneros musicales?");
+		textoIntereses.setText("¿Qué tan interesado está por los siguientes géneros musicales?");
 		textoIntereses.setBounds(10, 140, 240, 44);
 		getContentPane().add(textoIntereses);
 		
-		// Separa el ingreso del nombre con los intereses.
 		JSeparator separator = new JSeparator();
 		separator.setBounds(0, 114, 260, 11);
 		getContentPane().add(separator);
 		
-		// Texto TANGO
 		JTextPane textTango = new JTextPane();
 		textTango.setText("Tango:");
 		textTango.setFont(new Font("Arial", Font.BOLD, 13));
@@ -68,13 +72,11 @@ public class View extends JFrame{
 		textTango.setBounds(34, 206, 52, 20);
 		getContentPane().add(textTango);
 		
-		// BOTON para seleccionar 1-5 de TANGO
 		JSpinner spinnerTango = new JSpinner();
 		spinnerTango.setModel(new SpinnerNumberModel(1, 1, 5, 1));
 		spinnerTango.setBounds(34, 231, 52, 20);
 		getContentPane().add(spinnerTango);
 		
-		// Texto FOLCLORE
 		JTextPane textFolclore = new JTextPane();
 		textFolclore.setEditable(false);
 		textFolclore.setText("  Folclore:");
@@ -136,7 +138,7 @@ public class View extends JFrame{
 		
 		// BOTON de EJECUTAR
 		JButton btnEjecutar = new JButton("Ejecutar");
-		btnEjecutar.setEnabled(false);    // Desactivado por defecto
+		btnEjecutar.setEnabled(false);
 		btnEjecutar.setFont(new Font("Arial", Font.BOLD, 12));
 		btnEjecutar.setBounds(46, 381, 162, 23);
 		getContentPane().add(btnEjecutar);
@@ -148,8 +150,7 @@ public class View extends JFrame{
 		btnReiniciar.setBounds(46, 411, 162, 23);
 		getContentPane().add(btnReiniciar);
 		
-		// LISTENERS
-						
+		//LISTENERS					
 		btnNuevoUsuario.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
 		        String nombre = _fieldNombre.getText().trim();
@@ -158,52 +159,59 @@ public class View extends JFrame{
 		        int rock = (Integer) spinnerRock.getValue();
 		        int folclore = (Integer) spinnerFolclore.getValue();
 
-		        // Guarda el usuario
-		        if (_listener != null) {
-		            _listener.agregarUsuario(nombre, tango, urbano, rock, folclore);
-		        }
-		    	
-		        // Formatea la pantalla
+		        if(_listener != null) _listener.agregarUsuarioALaListaDeUsuarios(nombre, tango, urbano, rock, folclore);
+		        
 		        _fieldNombre.setText("");
 		        btnNuevoUsuario.setEnabled(false);
 		        reestablecerBotones(spinnerTango, spinnerUrbano, spinnerRock, spinnerFolclore);
-
-		        // Se habilita el boton de ejecutar si hay al menos 2 usuarios.
-		        if (_listener.hayUsuariosSuficientes()) {
-		            btnEjecutar.setEnabled(true);
-		        }
-		        
-				if(_listener.sePuedeHabilitarReinicio()) {
-					btnReiniciar.setEnabled(true);
-				}
+		        actualizarVistaUsuarios();
+		        if(_listener.hayUsuariosSuficientes()) btnEjecutar.setEnabled(true);
+		        if(_listener.sePuedeHabilitarReinicio()) btnReiniciar.setEnabled(true);
+		       
 		    }
 		});
 		
 		btnReiniciar.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
 		    	_listener.reiniciarSistema();
-		    	btnReiniciar.setEnabled(false);
+		    	 _fieldNombre.setText("");
+		         btnNuevoUsuario.setEnabled(true);
+		         btnEjecutar.setEnabled(false);
+		         btnReiniciar.setEnabled(false);
+		         reestablecerBotones(spinnerTango, spinnerUrbano, spinnerRock, spinnerFolclore);
 		    }
 		 });
-        
-		// De momento no va hasta q este el algoritmo
-		//btnEjecutar.addActionListener(e -> listener.ejecutarAlgoritmo());
-		
+		btnEjecutar.addActionListener(e -> _listener.ejecutarAlgoritmo());
 		mostrar();
 	}
+	
+	private void actualizarVistaUsuarios() {
+	    JPanel panelUsuarios = new JPanel();
+	    panelUsuarios.setLayout(new BoxLayout(panelUsuarios, BoxLayout.Y_AXIS));
+	    List<Usuario> usuarios = _listener.getUsuarios();
+	    panelUsuarios.removeAll();
+	    for(Usuario usuario : usuarios) {
+	        JLabel label = new JLabel(usuario.getNombre());
+	        label.setFont(new Font("Arial", Font.PLAIN, 14));
+	        panelUsuarios.add(label);
+	    }
+	    panelResultado.removeAll();
+	    panelResultado.add(panelUsuarios);
+	    panelResultado.revalidate();
+	    panelResultado.repaint();
+	}
+
 
 	private void mostrar() {
 		setVisible(true);
 	}
 	
-	// Reestablece el valor de los botones de intereses
 	private void reestablecerBotones(JSpinner spinnerTango, JSpinner spinnerUrbano, JSpinner spinnerRock,
 			JSpinner spinnerFolclore) {
 		spinnerTango.setModel(new SpinnerNumberModel(1, 1, 5, 1));
 		spinnerUrbano.setModel(new SpinnerNumberModel(1, 1, 5, 1));
 		spinnerRock.setModel(new SpinnerNumberModel(1, 1, 5, 1));
 		spinnerFolclore.setModel(new SpinnerNumberModel(1, 1, 5, 1));
-		
 	}
 	
 	public void avisoReinicioCorrecto(String mensaje) {
@@ -213,4 +221,40 @@ public class View extends JFrame{
     public void crearListener(ViewListener listener) {
         this._listener = listener;
     }
+    
+    public void mostrarGrupos(Map<Integer, List<Usuario>> gruposDeUsuarios) {
+        panelResultado.removeAll();
+        JPanel panelDeGrupos = new JPanel();
+        configuracionDeTamanioDelPanelExternoDeGrupos(panelDeGrupos);
+
+        for(Map.Entry<Integer, List<Usuario>> entry : gruposDeUsuarios.entrySet()) {
+            JPanel grupoPanel = new JPanel();
+            configuracionDeTamanioDelPanelInternoDeGrupo(grupoPanel);
+            grupoPanel.setBorder(BorderFactory.createTitledBorder("Grupo " + entry.getKey()));
+            for(Usuario usuario : entry.getValue()) {
+                grupoPanel.add(new JLabel(usuario.getNombre()));
+            }
+            panelDeGrupos.add(grupoPanel);
+        }
+
+        JScrollPane scrollPane = new JScrollPane(panelDeGrupos);
+        scrollPane.setPreferredSize(new Dimension(400, 450));
+        panelResultado.add(scrollPane);
+        panelResultado.revalidate();
+        panelResultado.repaint();
+    }
+
+    public void configuracionDeTamanioDelPanelExternoDeGrupos(JPanel panelDeGrupos) {
+        panelDeGrupos.setLayout(new BoxLayout(panelDeGrupos, BoxLayout.Y_AXIS));
+        panelDeGrupos.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(Color.BLACK, 2),
+            BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        ));
+    }
+
+    public void configuracionDeTamanioDelPanelInternoDeGrupo(JPanel grupoPanel) {
+        grupoPanel.setLayout(new BoxLayout(grupoPanel, BoxLayout.Y_AXIS));
+        grupoPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    }
+    
 }

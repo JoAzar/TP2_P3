@@ -41,57 +41,40 @@ public class Grafo {
     public void crearGrafoCompleto() {
 	    for (int i = 0; i < _vertices.size(); i++) {
 	        for (int j = i + 1; j < _vertices.size(); j++) {
-	            Usuario u1 = _vertices.get(i);
-	            Usuario u2 = _vertices.get(j);
-	            int peso = u1.calculoSimilaridad(u2);
-	            agregarArista(u1, u2, peso);
+	            Usuario primerUsuario = _vertices.get(i);
+	            Usuario segundoUsuario = _vertices.get(j);
+	            int peso = primerUsuario.calculoSimilaridad(segundoUsuario);
+	            agregarArista(primerUsuario, segundoUsuario, peso);
 	        }
 	    }
     }
     
     public Map<Integer, List<Usuario>> crearComponentesConexas(){
     	List<Arista> agm = crearAGM();
-    	
-    	if(agm.isEmpty()) {
-    		return new HashMap<>();
-    	}
-
+    	if(agm.isEmpty()) return new HashMap<>();
     	Collections.sort(agm, Collections.reverseOrder());
     	agm.remove(0);
-    	
     	Map<Usuario, Usuario> padre = inicializarPadres();
-    	for(Arista a : agm) {
-    		unionSinRaiz(a.getOrigen(), a.getDestino(), padre);
-    	}
-    	
+    	for(Arista arista : agm)
+    		unionSinRaiz(arista.getOrigen(), arista.getDestino(), padre);
     	Map<Integer, List<Usuario>> componentesConexas = enumerarComponentes(crearComponentes(padre));
-    	    	
-    	
     	return componentesConexas;
     }
     
     public List<Arista> crearAGM() {
         List<Arista> agm = new ArrayList<>();
-        
         Collections.sort(_aristas);
-
         Map<Usuario, Usuario> padre = inicializarPadres();
-        
-        for(Arista a : _aristas) {
-        	Usuario u1 = a.getOrigen();
-        	Usuario u2 = a.getDestino();
-        	
-        	Usuario raiz1 = find(u1, padre);
-        	Usuario raiz2 = find(u2, padre);
-        	
-        	if(raiz1 != raiz2) {
-        		agm.add(a);
-        		unionConRaiz(raiz1, raiz2, padre);
+        for(Arista arista : _aristas) {
+        	Usuario primerUsuario = arista.getOrigen();
+        	Usuario segundoUsuario = arista.getDestino();
+        	Usuario primerRaiz = find(primerUsuario, padre);
+        	Usuario segundaRaiz = find(segundoUsuario, padre);
+        	if(primerRaiz != segundaRaiz) {
+        		agm.add(arista);
+        		unionConRaiz(primerRaiz, segundaRaiz, padre);
         	}
-        	
-        	if(agm.size() == _vertices.size() - 1) {
-        		break;
-        	}
+        	if(agm.size() == _vertices.size() - 1) break;
         }
         return agm;
     }
@@ -129,20 +112,20 @@ public class Grafo {
     	return user;
     }
     
-    private void unionSinRaiz(Usuario u1, Usuario u2, Map<Usuario, Usuario> padre) {
-    	Usuario raiz1 = find(u1, padre);
-    	Usuario raiz2 = find(u2, padre);
-    	padre.put(raiz1, raiz2);
+    private void unionSinRaiz(Usuario primerUsuario, Usuario segundoUsuario, Map<Usuario, Usuario> padre) {
+    	Usuario primeraRaiz = find(primerUsuario, padre);
+    	Usuario segundaRaiz = find(segundoUsuario, padre);
+    	padre.put(primeraRaiz, segundaRaiz);
     }
     
-    private void unionConRaiz(Usuario r1, Usuario r2, Map<Usuario, Usuario> padre) {
-    	padre.put(r1, r2);
+    private void unionConRaiz(Usuario primeraRaiz, Usuario segundaRaiz, Map<Usuario, Usuario> padre) {
+    	padre.put(primeraRaiz, segundaRaiz);
     }
     
     private Map<Usuario, Usuario> inicializarPadres(){
     	Map<Usuario, Usuario> padre = new HashMap<>();
-    	for(Usuario u : _vertices) {
-    		padre.put(u, u);
+    	for(Usuario usuario : _vertices) {
+    		padre.put(usuario, usuario);
     	}
     	return padre;
     }
