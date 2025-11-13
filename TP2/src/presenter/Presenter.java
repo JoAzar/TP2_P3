@@ -69,6 +69,30 @@ public class Presenter implements ViewListener {
     }
     
     @Override
+    public void calcularPromedioInteres() {
+        Map<String, Double> promedios = calcularPromedioInteresPorGenero();
+        _vista.mostrarPromedioInteres(promedios);
+    }
+    
+    private Map<String, Double> calcularPromedioInteresPorGenero() {
+        Map<String, Double> sumas = new HashMap<>();
+        Map<String, Integer> conteos = new HashMap<>();
+        for(Usuario usuario : _usuarios) {
+            for(Map.Entry<String, Integer> entry : usuario.getGustos().entrySet()) {
+                String genero = entry.getKey();
+                int valor = entry.getValue();
+                sumas.put(genero, sumas.getOrDefault(genero, 0.0) + valor);
+                conteos.put(genero, conteos.getOrDefault(genero, 0) + 1);
+            }
+        }
+        Map<String, Double> promedios = new HashMap<>();
+        for(String genero : sumas.keySet()) {
+            promedios.put(genero, sumas.get(genero) / conteos.get(genero));
+        }
+        return promedios;
+    }
+    
+    @Override
     public void reiniciarSistema() {
     	_usuarios.clear();	
     }

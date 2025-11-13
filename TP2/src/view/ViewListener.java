@@ -9,4 +9,5 @@ public interface ViewListener {
     void reiniciarSistema();
     boolean sePuedeHabilitarReinicio();
 	List<Usuario> getUsuarios();
+	void calcularPromedioInteres();
 }
