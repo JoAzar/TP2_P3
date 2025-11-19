@@ -123,8 +123,8 @@ public class View extends JFrame{
 		botonParaPromediarPrograma(btnPromedio);
 		getContentPane().add(btnPromedio);
 						
-		asociarValoresDeGustosMusicalesConUsuario(btnNuevoUsuario, btnEjecutar, btnReiniciar, spinnerTango, spinnerRock, spinnerFolclore, spinnerUrbano);
-		reiniciarAsociacionDeValoresDeGustosMusicalesConUsuario(btnNuevoUsuario, btnEjecutar, btnReiniciar, spinnerTango, spinnerRock, spinnerFolclore, spinnerUrbano);
+		asociarValoresDeGustosMusicalesConUsuario(btnNuevoUsuario, btnReiniciar, btnEjecutar , spinnerTango, spinnerUrbano, spinnerRock, spinnerFolclore );
+		reiniciarAsociacionDeValoresDeGustosMusicalesConUsuario(btnNuevoUsuario, btnReiniciar, btnEjecutar, spinnerTango, spinnerUrbano, spinnerRock, spinnerFolclore);
 		asociarUsuarios(btnEjecutar);
 		calcularElPromedioDeGustosMusicalesDeUsuarios(btnPromedio);
 		mostrar();
@@ -138,7 +138,7 @@ public class View extends JFrame{
 		        int urbano = (Integer) spinnerUrbano.getValue();
 		        int rock = (Integer) spinnerRock.getValue();
 		        int folclore = (Integer) spinnerFolclore.getValue();
-		        if(_listener != null) _listener.agregarUsuarioALaListaDeUsuarios(nombre, tango, urbano, rock, folclore);
+		        if(_listener != null) _listener.agregarUsuarioALaListaDeUsuarios(nombre, tango, folclore, rock, urbano);
 		        _fieldNombre.setText("");
 		        botonDeNuevoUsuario.setEnabled(false);
 		        reestablecerBotones(spinnerTango, spinnerUrbano, spinnerRock, spinnerFolclore);
