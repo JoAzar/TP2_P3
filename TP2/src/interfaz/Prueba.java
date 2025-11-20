@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import model.AgrupacionDeUsuarios;
 import model.Grafo;
 import model.Usuario;
 // ESTO ERA PARA VER SI ANDABA (ANDA) SE PUEDE BORRAR
@@ -37,15 +38,16 @@ public class Prueba {
         gustos4.put("urbano", 2);
         Usuario u4 = new Usuario("Marta", gustos4);
 
-        Grafo grafo = new Grafo();
+        Grafo<Usuario> grafo = new Grafo<>();
         grafo.agregarVertice(u1);
         grafo.agregarVertice(u2);
         grafo.agregarVertice(u3);
         grafo.agregarVertice(u4);
 
-        grafo.crearGrafoCompleto();
+        grafo.crearGrafoCompleto((user1, user2) -> user1.calculoSimilaridad(user2));
 
-        Map<Integer, List<Usuario>> grupos = grafo.crearComponentesConexas();
+        AgrupacionDeUsuarios agrupador = new AgrupacionDeUsuarios();
+        Map<Integer, List<Usuario>> grupos = agrupador.crearComponentesConexas(grafo, 2);
 
         for (Map.Entry<Integer, List<Usuario>> entry : grupos.entrySet()) {
             System.out.println("Grupo " + entry.getKey() + ":");

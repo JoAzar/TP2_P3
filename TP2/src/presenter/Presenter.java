@@ -1,9 +1,11 @@
 package presenter;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+//import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import model.AgrupacionDeUsuarios;
 import model.Grafo;
 import model.Usuario;
 import view.View;
@@ -12,6 +14,8 @@ import view.ViewListener;
 public class Presenter implements ViewListener {
 	private View _vista;
 	private List<Usuario> _usuarios;
+	private int _cantGrupos = 2;
+	private AgrupacionDeUsuarios _agrupador = new AgrupacionDeUsuarios();
     
     public void inicializarInterfazPresenter(View vista) {
         _vista = vista;
@@ -27,47 +31,35 @@ public class Presenter implements ViewListener {
     
     @Override
     public void ejecutarAlgoritmo() {
-    	 Map<Integer, List<Usuario>> gruposDeUsuarios = agruparUsuariosPorSimilitud();
-    	    if(gruposDeUsuarios.isEmpty()) {
-    	        System.out.println("El mapa de grupos está vacío.");
-    	    } else {
-    	        System.out.println("El mapa de grupos contiene los siguientes grupos:");
-    	        for (Map.Entry<Integer, List<Usuario>> entry : gruposDeUsuarios.entrySet()) {
-    	            System.out.println("Grupo " + entry.getKey() + ":");
-    	            for (Usuario usuario : entry.getValue()) {
-    	                System.out.println("  - " + usuario.getNombre());
-    	            }
-    	        }
-    	    }
-    	_vista.mostrarGrupos(gruposDeUsuarios);
+    	Grafo<Usuario> grafo = crearGrafoCompleto();
+
+    	Map<Integer, List<Usuario>> gruposResultantes = _agrupador.crearComponentesConexas(grafo, _cantGrupos);
+    	_vista.mostrarGrupos(gruposResultantes);
     }
     
-    public Map<Integer, List<Usuario>> agruparUsuariosPorSimilitud() {
-        Map<Integer, List<Usuario>> gruposDeUsuarios = new HashMap<>();
-        List<Usuario> usuariosPorAgrupar = new ArrayList<>(_usuarios);
-        int grupoId = 1;
-        while (!usuariosPorAgrupar.isEmpty()) {
-            Usuario usuarioBase = usuariosPorAgrupar.remove(0);
-            List<Usuario> grupo = new ArrayList<>();
-            grupo.add(usuarioBase);
-            for(Iterator<Usuario> iter = usuariosPorAgrupar.iterator(); iter.hasNext();) {
-                Usuario usuarioComparado = iter.next();
-                
-                //ESTAS DOS LINES SON PARA DEBUGGEAR, HAY QUE QUITAR
-                int similitud = usuarioBase.calculoSimilaridad(usuarioComparado);
-                System.out.println("\nSimilitud entre [" + usuarioBase.getNombre() + "] y [" + usuarioComparado.getNombre() + "] La diferencia de gustos entre usuarios es < " + similitud+" >");
-                
-                //HAY QUE VER EN EL PDF DEL TP CUÁNTA SIMILARIDAD TIENE QUE TENER UN SUSUARIO CON OTRO DE AHI ES 3 CAMBIARLO POR OTRO VALOR EL MAX ES 16
-                if(usuarioBase.calculoSimilaridad(usuarioComparado) <= 1) {
-                    grupo.add(usuarioComparado);
-                    iter.remove();
-                }
-            }
-            gruposDeUsuarios.put(grupoId++, grupo);
-        }
-        return gruposDeUsuarios;
-    }
-    
+    // ESTO TENGO QUE VER QUÉ HACE (CAPAZ SE BORRA)
+//    public Map<Integer, List<Usuario>> agruparUsuariosPorSimilitud() {
+//        Map<Integer, List<Usuario>> gruposDeUsuarios = new HashMap<>();
+//        List<Usuario> usuariosPorAgrupar = new ArrayList<>(_usuarios);
+//        int grupoId = 1;
+//        while (!usuariosPorAgrupar.isEmpty()) {
+//            Usuario usuarioBase = usuariosPorAgrupar.remove(0);
+//            List<Usuario> grupo = new ArrayList<>();
+//            grupo.add(usuarioBase);
+//            for(Iterator<Usuario> iter = usuariosPorAgrupar.iterator(); iter.hasNext();) {
+//                Usuario usuarioComparado = iter.next();
+//                
+//                //HAY QUE VER EN EL PDF DEL TP CUÁNTA SIMILARIDAD TIENE QUE TENER UN SUSUARIO CON OTRO DE AHI ES 3 CAMBIARLO POR OTRO VALOR EL MAX ES 16
+//                if(usuarioBase.calculoSimilaridad(usuarioComparado) <= 1) {
+//                    grupo.add(usuarioComparado);
+//                    iter.remove();
+//                }
+//            }
+//            gruposDeUsuarios.put(grupoId++, grupo);
+//        }
+//        return gruposDeUsuarios;
+//    }
+//    
     @Override
     public void calcularPromedioInteres() {
         Map<String, Double> promedios = calcularPromedioInteresPorGenero();
@@ -97,11 +89,14 @@ public class Presenter implements ViewListener {
     	_usuarios.clear();	
     }
     
-	public Grafo crearGrafoCompleto() {
-		Grafo grafo = new Grafo();
-	    for(Usuario usuario : _usuarios)
+	public Grafo<Usuario> crearGrafoCompleto() {
+		Grafo<Usuario> grafo = new Grafo<>();
+		
+	    for(Usuario usuario : _usuarios) {
 	        grafo.agregarVertice(usuario);
-	    grafo.crearGrafoCompleto();
+	    }
+	    grafo.crearGrafoCompleto((u1, u2) -> u1.calculoSimilaridad(u2));
+	    
 		return grafo;
 	}
 
@@ -111,9 +106,6 @@ public class Presenter implements ViewListener {
     	gustos.put("folclore", folclore);
     	gustos.put("rock", rock);
     	gustos.put("urbano", urbano);
-    	for (Map.Entry<String, Integer> entry : gustos.entrySet()) {	//ESTO ES PARA DEBUGGEAR
-            System.out.println("Género: " + entry.getKey() + " - Puntaje: " + entry.getValue());
-        }
     	return gustos;
 	}
     
@@ -121,6 +113,55 @@ public class Presenter implements ViewListener {
 	public boolean hayUsuariosSuficientes() {
     	if(_usuarios.size() >= 2) return true;
     	return false;
+    }
+    
+	@Override
+	public void modificarCantGrupos(String input) {
+    	if(input == null || input.trim().isEmpty()) {
+    		_cantGrupos = 2;
+    		return;
+    	}
+    	
+    	if(!datoIngresadoNoEsNum(input)) {
+    		_cantGrupos = 2;
+    		return;
+    	}
+    	
+    	int cantGrupos = Integer.parseInt(input);
+    	
+    	if(!cantGruposEsValido(cantGrupos)){
+    		_cantGrupos = 2;
+    		return;
+    	}
+    	
+    	_cantGrupos = cantGrupos;
+	}
+	
+    private boolean datoIngresadoNoEsNum(String input) {
+        String inputTrim = input.trim();
+        boolean esNum = inputTrim.chars().allMatch(Character::isDigit);
+        if (!esNum) {
+            _vista.mostrarMensaje("Debe ingresar un número entero válido.");
+            return false;
+        }
+        
+        return true;
+    }
+    
+    private boolean cantGruposEsValido(int cantGrupos) {
+    	int cantUsuarios = 0;
+    	if(_usuarios != null) {
+    		cantUsuarios = _usuarios.size();
+    	}
+    	
+    	if(cantGrupos < 2) {
+    		return false;
+    	}
+    	if(cantUsuarios > 0 && cantUsuarios < cantGrupos) {
+    		return false;
+    	}
+    	
+    	return true;
     }
     
     @Override

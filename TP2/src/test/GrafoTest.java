@@ -2,22 +2,29 @@ package test;
 
 import static org.junit.Assert.*;
 import java.util.*;
+import java.util.function.BiFunction;
+
 import org.junit.Test;
 import model.Grafo;
+import model.Kruskal;
+import model.UnionFind;
 import model.Usuario;
+import model.AgrupacionDeUsuarios;
 import model.Arista;
 
 public class GrafoTest {
+    private final BiFunction<Usuario, Usuario, Integer> similitud =
+            (u1, u2) -> u1.calculoSimilaridad(u2);
 
     @Test(expected = IllegalArgumentException.class)
     public void agregarVerticeNuloTest() {
-        Grafo grafo = new Grafo();
+        Grafo<Usuario> grafo = new Grafo<>();
         grafo.agregarVertice(null);
     }
 
     @Test
     public void agregarVerticeTest() {
-        Grafo grafo = new Grafo();
+        Grafo<Usuario> grafo = new Grafo<>();
         Map<String, Integer> gustos = new HashMap<>();
         gustos.put("rock", 5);
         gustos.put("tango", 3);
@@ -32,7 +39,7 @@ public class GrafoTest {
 
     @Test
     public void agregarAristaTest() {
-        Grafo grafo = new Grafo();
+        Grafo<Usuario> grafo = new Grafo<>();
 
         Map<String, Integer> gustos = new HashMap<>();
         gustos.put("rock", 5);
@@ -48,7 +55,7 @@ public class GrafoTest {
         grafo.agregarArista(u1, u2, 10);
 
         assertEquals(1, grafo.getAristas().size());
-        Arista arista = grafo.getAristas().get(0);
+        Arista<Usuario> arista = grafo.getAristas().get(0);
         assertEquals(u1, arista.getOrigen());
         assertEquals(u2, arista.getDestino());
         assertEquals(10, arista.getPeso());
@@ -56,7 +63,7 @@ public class GrafoTest {
 
     @Test
     public void agregarAristaDuplicadaTest() {
-        Grafo grafo = new Grafo();
+        Grafo<Usuario> grafo = new Grafo<>();
 
         Map<String, Integer> gustos = new HashMap<>();
         gustos.put("rock", 5);
@@ -78,23 +85,34 @@ public class GrafoTest {
     
     @Test
     public void crearGrafoCompletoTest() {
-        Grafo grafo = crearGrafoCompleto();
+        Grafo<Usuario> grafo = crearGrafoCompleto();
 
         assertEquals(6, grafo.getAristas().size());
     }
 
     @Test
-    public void crearAGMTest() {
-        Grafo grafo = crearGrafoCompleto();
-        List<Arista> agm = grafo.crearAGM();
+    public void kruskalAGMTest() {
+        Grafo<Usuario> grafo = crearGrafoCompleto();
+        Kruskal<Usuario> kruskal = new Kruskal<>();
+        
+        List<Arista<Usuario>> agm = kruskal.crearAGM(grafo);
 
         assertEquals(4 - 1, agm.size());
     }
 
     @Test
     public void crearComponentesConexasTest() {
-        Grafo grafo = crearGrafoCompleto();
-        Map<Integer, List<Usuario>> grupos = grafo.crearComponentesConexas();
+        Grafo<Usuario> grafo = crearGrafoCompleto();
+        Kruskal<Usuario> kruskal = new Kruskal<>();
+        UnionFind<Usuario> unionf = new UnionFind<>(grafo.getVertices());
+        
+        List<Arista<Usuario>> agm = kruskal.crearAGM(grafo);
+        
+        for(Arista<Usuario> a : agm) {
+        	unionf.unionSinRaiz(a.getOrigen(), a.getDestino());
+        }
+        AgrupacionDeUsuarios agrupador = new AgrupacionDeUsuarios();
+        Map<Integer, List<Usuario>> grupos = agrupador.crearComponentesConexas(grafo, 2);
 
         assertEquals(2, grupos.size());
 
@@ -106,8 +124,8 @@ public class GrafoTest {
         assertEquals(new HashSet<>(grafo.getVertices()), todos);
     }
     
-    private Grafo crearGrafoCompleto() {
-        Grafo grafo = new Grafo();
+    private Grafo<Usuario> crearGrafoCompleto() {
+        Grafo<Usuario> grafo = new Grafo<>();
 
         Map<String, Integer> g1 = new HashMap<>();
         g1.put("rock", 2);
@@ -143,7 +161,7 @@ public class GrafoTest {
         grafo.agregarVertice(u3);
         grafo.agregarVertice(u4);
 
-        grafo.crearGrafoCompleto();
+        grafo.crearGrafoCompleto(similitud);
 
         return grafo;
     }

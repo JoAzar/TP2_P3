@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.awt.event.ActionEvent;
 
+@SuppressWarnings("serial")
 public class View extends JFrame{
 	private ViewListener _listener;
 	private JTextField _fieldNombre;
@@ -24,7 +25,7 @@ public class View extends JFrame{
 	
 	private void inicializar() {
 		setTitle("Grupos de similaridad por gustos musicales");
-		setBounds(110, 110, 700, 520); 
+		setBounds(110, 110, 708, 575); 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().setLayout(null);
 		
@@ -45,12 +46,13 @@ public class View extends JFrame{
 		_fieldNombre.setColumns(10);
 		
 		JTextPane textNombre = new JTextPane();
+		textNombre.setBounds(62, 43, 146, 20);
 		noPermitirSenialarSobreElPanel(textNombre);
 		configurarTamaniosDeVentanaNombreDeUsuario(textNombre);
 		getContentPane().add(textNombre);
 		
 		panelResultado = new JPanel();
-		configurarTamaniosDeVentanapanelDeResultado(panelResultado);
+		configurarTamaniosDeVentanaPanelDeResultado(panelResultado);
 		getContentPane().add(panelResultado);
 		
 		JTextPane textoIntereses = new JTextPane();
@@ -68,69 +70,91 @@ public class View extends JFrame{
 		getContentPane().add(textoSeleccionTango);
 		
 		JSpinner spinnerTango = new JSpinner();
+		spinnerTango.setBounds(44, 231, 52, 20);
 		spinnerTango.setModel(new SpinnerNumberModel(1, 1, 5, 1));
-		spinnerTango.setBounds(34, 231, 52, 20);
 		getContentPane().add(spinnerTango);
 		
 		JTextPane textoSeleccionFolclore = new JTextPane();
+		textoSeleccionFolclore.setBounds(41, 272, 76, 20);
 		noPermitirSenialarSobreElPanel(textoSeleccionFolclore);
 		configurarTamaniosDeVentanaTextoDeSeleccionFolclore(textoSeleccionFolclore);
 		getContentPane().add(textoSeleccionFolclore);
 		
 		JSpinner spinnerFolclore = new JSpinner();
+		spinnerFolclore.setBounds(46, 299, 52, 20);
 		spinnerFolclore.setModel(new SpinnerNumberModel(1, 1, 5, 1));
-		spinnerFolclore.setBounds(34, 299, 52, 20);
 		getContentPane().add(spinnerFolclore);
 		
 		JTextPane textoSeleccionUrbano = new JTextPane();
+		textoSeleccionUrbano.setBounds(164, 272, 73, 20);
 		configurarTamaniosDeVentanaTextoDeSeleccionUrbano(textoSeleccionUrbano);
 		noPermitirSenialarSobreElPanel(textoSeleccionUrbano);
 		getContentPane().add(textoSeleccionUrbano);
 		
 		JSpinner spinnerUrbano = new JSpinner();
+		spinnerUrbano.setBounds(165, 299, 52, 20);
 		spinnerUrbano.setModel(new SpinnerNumberModel(1, 1, 5, 1));
-		spinnerUrbano.setBounds(154, 299, 52, 20);
 		getContentPane().add(spinnerUrbano);
 		
 		JTextPane textoSeleccionRock = new JTextPane();
+		textoSeleccionRock.setBounds(170, 206, 76, 20);
 		configurarTamaniosDeVentanaTextoDeSeleccionRock(textoSeleccionRock);
 		noPermitirSenialarSobreElPanel(textoSeleccionRock);
 		getContentPane().add(textoSeleccionRock);
 		
 		JSpinner spinnerRock = new JSpinner();
+		spinnerRock.setBounds(164, 231, 52, 20);
 		spinnerRock.setModel(new SpinnerNumberModel(1, 1, 5, 1));
-		spinnerRock.setBounds(154, 231, 52, 20);
 		getContentPane().add(spinnerRock);
 		
 		JButton btnNuevoUsuario = new JButton("Agregar persona");
+		btnNuevoUsuario.setBounds(46, 351, 162, 23);
 		noPermitirSenialarSobreElPanel(textoSeleccionUrbano);
-		botonDeAgregarNuevaPersonaInicial(btnNuevoUsuario);
+		confgBtnNuevoUsuario(btnNuevoUsuario);
 		getContentPane().add(btnNuevoUsuario);
 		esperarElIngresoDeNombreDeUsuario(btnNuevoUsuario);
 			
 		JButton btnEjecutar = new JButton("Ejecutar");
+		btnEjecutar.setBounds(46, 381, 162, 23);
 		noPermitirSenialarSobreElPanel(btnEjecutar);
-		botonParaEjecutarPrograma(btnEjecutar);
+		confgBtnEjecutarPrograma(btnEjecutar);
 		getContentPane().add(btnEjecutar);
 		
 		JButton btnReiniciar = new JButton("Reiniciar");
+		btnReiniciar.setBounds(46, 411, 162, 23);
 		noPermitirSenialarSobreElPanel(btnReiniciar);
-		botonParaReiniciarPrograma(btnReiniciar);
+		confgBtnReiniciarPrograma(btnReiniciar);
 		getContentPane().add(btnReiniciar);
 		
 		JButton btnPromedio = new JButton("Ver promedio");
+		btnPromedio.setBounds(46, 441, 162, 23);
 		noPermitirSenialarSobreElPanel(btnReiniciar);
-		botonParaPromediarPrograma(btnPromedio);
+		confgBtnPromediarPrograma(btnPromedio);
 		getContentPane().add(btnPromedio);
+		
+		JButton btnCantGrupos = new JButton("Modificar cantidad de grupos");
+		btnCantGrupos.setBounds(25, 471, 208, 23);
+		noPermitirSenialarSobreElPanel(btnCantGrupos);
+		btnCantGrupos.addActionListener(e -> {
+			if(_listener != null) {
+				_listener.modificarCantGrupos(JOptionPane.showInputDialog(this, "Ingrese cantidad de grupos a crear: ", 
+    		"Cantidad de grupos", JOptionPane.QUESTION_MESSAGE));
+			}
+		});
+		btnCantGrupos.setEnabled(true);
+		btnCantGrupos.setFont(new Font("Arial", Font.BOLD, 12));
+		getContentPane().add(btnCantGrupos);
 						
-		asociarValoresDeGustosMusicalesConUsuario(btnNuevoUsuario, btnEjecutar, btnReiniciar, spinnerTango, spinnerRock, spinnerFolclore, spinnerUrbano);
-		reiniciarAsociacionDeValoresDeGustosMusicalesConUsuario(btnNuevoUsuario, btnEjecutar, btnReiniciar, spinnerTango, spinnerRock, spinnerFolclore, spinnerUrbano);
-		asociarUsuarios(btnEjecutar);
-		calcularElPromedioDeGustosMusicalesDeUsuarios(btnPromedio);
+		asignarValoresDeGustosMusicalesAUsuario(btnNuevoUsuario, btnReiniciar, btnEjecutar, spinnerTango, spinnerUrbano, spinnerRock, spinnerFolclore);
+		reiniciarYLimpiarTodo(btnNuevoUsuario, btnReiniciar, btnEjecutar, spinnerTango, spinnerUrbano, spinnerRock, spinnerFolclore);
+		ejecutarAlgoritmo(btnEjecutar);
+		calcularPromedioGustosMusicales(btnPromedio);
 		mostrar();
 	}
 	
-	private void asociarValoresDeGustosMusicalesConUsuario(JButton botonDeNuevoUsuario, JButton botonDeReiniciar, JButton botonDeEjecutar, JSpinner spinnerTango, JSpinner spinnerUrbano, JSpinner spinnerRock, JSpinner spinnerFolclore) {
+	private void asignarValoresDeGustosMusicalesAUsuario(JButton botonDeNuevoUsuario, JButton botonDeReiniciar,
+			JButton botonDeEjecutar, JSpinner spinnerTango, 
+			JSpinner spinnerUrbano, JSpinner spinnerRock, JSpinner spinnerFolclore) {
 		botonDeNuevoUsuario.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
 		        String nombre = _fieldNombre.getText().trim();
@@ -138,7 +162,7 @@ public class View extends JFrame{
 		        int urbano = (Integer) spinnerUrbano.getValue();
 		        int rock = (Integer) spinnerRock.getValue();
 		        int folclore = (Integer) spinnerFolclore.getValue();
-		        if(_listener != null) _listener.agregarUsuarioALaListaDeUsuarios(nombre, tango, urbano, rock, folclore);
+		        if(_listener != null) _listener.agregarUsuarioALaListaDeUsuarios(nombre, tango, folclore, rock, urbano);
 		        _fieldNombre.setText("");
 		        botonDeNuevoUsuario.setEnabled(false);
 		        reestablecerBotones(spinnerTango, spinnerUrbano, spinnerRock, spinnerFolclore);
@@ -149,24 +173,38 @@ public class View extends JFrame{
 		});
 	}
 	
-	private void reiniciarAsociacionDeValoresDeGustosMusicalesConUsuario(JButton botonDeNuevoUsuario, JButton botonDeReiniciar, JButton botonDeEjecutar, JSpinner spinnerTango, JSpinner spinnerUrbano, JSpinner spinnerRock, JSpinner spinnerFolclore) {
+	private void reiniciarYLimpiarTodo(JButton botonDeNuevoUsuario, JButton botonDeReiniciar,
+			JButton botonDeEjecutar, JSpinner spinnerTango, JSpinner spinnerUrbano, JSpinner spinnerRock,
+			JSpinner spinnerFolclore) {
 		botonDeReiniciar.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
 		    	_listener.reiniciarSistema();
-		    	 _fieldNombre.setText("");
-		         botonDeNuevoUsuario.setEnabled(true);
-		         botonDeEjecutar.setEnabled(false);
-		         botonDeReiniciar.setEnabled(false);
-		         reestablecerBotones(spinnerTango, spinnerUrbano, spinnerRock, spinnerFolclore);
+		    	_fieldNombre.setText("");
+		        botonDeNuevoUsuario.setEnabled(true);
+		        botonDeEjecutar.setEnabled(false);
+		        botonDeReiniciar.setEnabled(false);
+		        reestablecerBotones(spinnerTango, spinnerUrbano, spinnerRock, spinnerFolclore);
+		        
+		        panelResultado.removeAll();
+		        panelResultado.revalidate();
+		        panelResultado.repaint();
 		    }
 		 });
 	}
 	
-	private void asociarUsuarios(JButton botonDeEjecutar) {
+	private void reestablecerBotones(JSpinner spinnerTango, JSpinner spinnerUrbano, JSpinner spinnerRock,
+			JSpinner spinnerFolclore) {
+		spinnerTango.setModel(new SpinnerNumberModel(1, 1, 5, 1));
+		spinnerUrbano.setModel(new SpinnerNumberModel(1, 1, 5, 1));
+		spinnerRock.setModel(new SpinnerNumberModel(1, 1, 5, 1));
+		spinnerFolclore.setModel(new SpinnerNumberModel(1, 1, 5, 1));
+	}
+	
+	private void ejecutarAlgoritmo(JButton botonDeEjecutar) {
 		botonDeEjecutar.addActionListener(e -> _listener.ejecutarAlgoritmo());
 	}
 	
-	public void calcularElPromedioDeGustosMusicalesDeUsuarios(JButton botonDePromedio) {
+	public void calcularPromedioGustosMusicales(JButton botonDePromedio) {
 		botonDePromedio.addActionListener(e -> {if(_listener != null) _listener.calcularPromedioInteres();});
 	}
 	
@@ -184,12 +222,11 @@ public class View extends JFrame{
 		panelSeleccionado.setBackground(new Color(192, 192, 192));
 		panelSeleccionado.setFont(new Font("Arial", Font.BOLD, 13));
 		panelSeleccionado.setText("Nombre de usuario:");
-		panelSeleccionado.setBounds(62, 43, 146, 20);
 	}
 	
-	private void configurarTamaniosDeVentanapanelDeResultado(JPanel panelResultado) {
-		int altura = 450;
-		int anchura = 400;
+	private void configurarTamaniosDeVentanaPanelDeResultado(JPanel panelResultado) {
+		int altura = 480;
+		int anchura = 410;
 		int margen = 10;
 		int comienzoDelPanel = 270;
 		panelResultado.setBackground(new Color(0, 0, 0));
@@ -197,14 +234,14 @@ public class View extends JFrame{
 	}
 	
 	private void configurarTamaniosDeVentanaTextoDeInteres(JTextPane textoDeInteres) {
+		textoDeInteres.setBounds(10, 140, 240, 44);
 		textoDeInteres.setBackground(new Color(192, 192, 192));		
 		textoDeInteres.setFont(new Font("Arial", Font.BOLD, 13));
-		textoDeInteres.setText("Interés en géneros musicales");
-		textoDeInteres.setBounds(10, 140, 240, 44);
+		textoDeInteres.setText("      Interés en géneros musicales");
     }
 	
 	private void configurarTamaniosDeVentanaTextoDeSeleccionTango(JTextPane textoDeSeleccionTango) {
-		textoDeSeleccionTango.setBounds(34, 206, 52, 20);
+		textoDeSeleccionTango.setBounds(44, 206, 52, 20);
 		textoDeSeleccionTango.setText("Tango");
 		textoDeSeleccionTango.setFont(new Font("Arial", Font.BOLD, 13));
 		textoDeSeleccionTango.setBackground(new Color(192, 192, 192));
@@ -214,7 +251,6 @@ public class View extends JFrame{
 		textoDeSeleccionFolclore.setText("Folclore");
 		textoDeSeleccionFolclore.setFont(new Font("Arial", Font.BOLD, 13));
 		textoDeSeleccionFolclore.setBackground(Color.LIGHT_GRAY);
-		textoDeSeleccionFolclore.setBounds(22, 272, 76, 20);
 	}
 	
 	private void configurarTamaniosDeVentanaTextoDeSeleccionUrbano(JTextPane textoDeSeleccionUrbano) {
@@ -222,7 +258,6 @@ public class View extends JFrame{
 		textoDeSeleccionUrbano.setFont(new Font("Arial", Font.BOLD, 13));
 		textoDeSeleccionUrbano.setEditable(false);
 		textoDeSeleccionUrbano.setBackground(Color.LIGHT_GRAY);
-		textoDeSeleccionUrbano.setBounds(144, 272, 73, 20);
 	}
 	
 	private void configurarTamaniosDeVentanaTextoDeSeleccionRock(JTextPane textoDeSeleccionRock) {
@@ -230,30 +265,25 @@ public class View extends JFrame{
 		textoDeSeleccionRock.setText("Rock");
 		textoDeSeleccionRock.setFont(new Font("Arial", Font.BOLD, 13));
 		textoDeSeleccionRock.setBackground(Color.LIGHT_GRAY);
-		textoDeSeleccionRock.setBounds(131, 206, 119, 20);
 	}
 	
-	private void botonDeAgregarNuevaPersonaInicial(JButton botonNuevoUsuario) {
+	private void confgBtnNuevoUsuario(JButton botonNuevoUsuario) {
 		botonNuevoUsuario.setEnabled(false);
 		botonNuevoUsuario.setFont(new Font("Arial", Font.BOLD, 12));
-		botonNuevoUsuario.setBounds(46, 351, 162, 23);
 	}
 	
-	private void botonParaEjecutarPrograma(JButton botonDeEjecutar) {
+	private void confgBtnEjecutarPrograma(JButton botonDeEjecutar) {
 		botonDeEjecutar.setEnabled(false);
 		botonDeEjecutar.setFont(new Font("Arial", Font.BOLD, 12));
-		botonDeEjecutar.setBounds(46, 381, 162, 23);
 	}
 	
-	private void botonParaReiniciarPrograma(JButton botonDeReiniciar) {
+	private void confgBtnReiniciarPrograma(JButton botonDeReiniciar) {
 		botonDeReiniciar.setFont(new Font("Arial", Font.BOLD, 12));
 		botonDeReiniciar.setEnabled(false);
-		botonDeReiniciar.setBounds(46, 411, 162, 23);
 	}
 	
-	private void botonParaPromediarPrograma(JButton botonDePromedio) {
+	private void confgBtnPromediarPrograma(JButton botonDePromedio) {
 		botonDePromedio.setFont(new Font("Arial", Font.BOLD, 12));
-		botonDePromedio.setBounds(46, 441, 162, 23);
 	}
 	
 	private void esperarElIngresoDeNombreDeUsuario(JButton botonNuevoUsuario) {
@@ -286,14 +316,6 @@ public class View extends JFrame{
 		setVisible(true);
 	}
 	
-	private void reestablecerBotones(JSpinner spinnerTango, JSpinner spinnerUrbano, JSpinner spinnerRock,
-			JSpinner spinnerFolclore) {
-		spinnerTango.setModel(new SpinnerNumberModel(1, 1, 5, 1));
-		spinnerUrbano.setModel(new SpinnerNumberModel(1, 1, 5, 1));
-		spinnerRock.setModel(new SpinnerNumberModel(1, 1, 5, 1));
-		spinnerFolclore.setModel(new SpinnerNumberModel(1, 1, 5, 1));
-	}
-	
 	public void avisoReinicioCorrecto(String mensaje) {
 	    JOptionPane.showMessageDialog(this, mensaje);
 	}
@@ -311,15 +333,27 @@ public class View extends JFrame{
             JPanel grupoPanel = new JPanel();
             configuracionDeTamanioDelPanelInternoDeGrupo(grupoPanel);
             grupoPanel.setBorder(BorderFactory.createTitledBorder("Grupo " + entry.getKey()));
+            grupoPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, grupoPanel.getPreferredSize().height));
+            
             for(Usuario usuario : entry.getValue()) {
-                grupoPanel.add(new JLabel(usuario.getNombre()));
+            	JLabel nombreLbl = new JLabel(usuario.getNombre());
+                nombreLbl.setFont(new Font("Arial", Font.PLAIN, 14));
+                nombreLbl.setAlignmentX(Component.LEFT_ALIGNMENT);
+                nombreLbl.setMaximumSize(new Dimension(Integer.MAX_VALUE, nombreLbl.getPreferredSize().height));
+                grupoPanel.add(nombreLbl);
             }
+            grupoPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, grupoPanel.getPreferredSize().height));
             panelDeGrupos.add(grupoPanel);
+            panelDeGrupos.add(Box.createVerticalStrut(8));
         }
 
         JScrollPane scrollPane = new JScrollPane(panelDeGrupos);
-        scrollPane.setPreferredSize(new Dimension(400, 450));
-        panelResultado.add(scrollPane);
+        scrollPane.setPreferredSize(null);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        
+        panelResultado.setLayout(new BorderLayout());
+        panelResultado.add(scrollPane, BorderLayout.CENTER);
         panelResultado.revalidate();
         panelResultado.repaint();
     }
@@ -353,4 +387,7 @@ public class View extends JFrame{
 	    );
 	}
     
+    public void mostrarMensaje(String mensaje) {
+    	JOptionPane.showMessageDialog(this, mensaje);
+    }
 }

@@ -1,17 +1,17 @@
 package model;
 
-public class Arista implements Comparable<Arista>{
-    private Usuario _origen, _destino;
+public class Arista<T> implements Comparable<Arista<T>>{
+    private T _origen, _destino;
     private int _peso;
 
-    public Arista(Usuario origen, Usuario destino, int peso) {
+    public Arista(T origen, T destino, int peso) {
         _origen = origen;
         _destino = destino;
         _peso = peso;
     }
     
     @Override
-    public int compareTo(Arista otraArista) {
+    public int compareTo(Arista<T> otraArista) {
     	return Integer.compare(_peso, otraArista._peso);
     }
     
@@ -19,7 +19,7 @@ public class Arista implements Comparable<Arista>{
     public boolean equals(Object obj) {
         if(this == obj) return true;
         if(!(obj instanceof Arista)) return false;
-        Arista a = (Arista) obj;
+        Arista<?> a = (Arista<?>) obj;
         return _origen.equals(a._origen) && _destino.equals(a._destino);
     }
 
@@ -28,11 +28,11 @@ public class Arista implements Comparable<Arista>{
     	return _origen.hashCode() + _destino.hashCode();
     }
     
-    public Usuario getOrigen() {
+    public T getOrigen() {
     	return _origen;
     }
     
-    public Usuario getDestino() {
+    public T getDestino() {
     	return _destino;
     }
     
