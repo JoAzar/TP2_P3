@@ -4,81 +4,79 @@ import static org.junit.Assert.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import model.UnionFind;
 
 public class UnionFindTest {
 
-    private UnionFind<String> uf;
+    private UnionFind<String> unionf;
     private List<String> vertices;
 
     @Before
     public void setUp() {
         vertices = Arrays.asList("A", "B", "C", "D");
-        uf = new UnionFind<>(vertices);
+        unionf = new UnionFind<>(vertices);
     }
 
     @Test
     public void inicializacionCadaElementoEsSuPropioPadreTest() {
-        Map<String, String> padre = uf.getPadre();
+        Map<String, String> padre = unionf.getPadre();
 
-        for (String elem : vertices) {
-            assertEquals(elem, padre.get(elem));
+        for (String v : vertices) {
+            assertEquals(v, padre.get(v));
         }
     }
 
     @Test
     public void findDevuelveElMismoElementoSiEsRaizTest() {
-        assertEquals("A", uf.find("A"));
-        assertEquals("B", uf.find("B"));
+        assertEquals("A", unionf.find("A"));
+        assertEquals("B", unionf.find("B"));
     }
 
     @Test
     public void unionSinRaizUneCorrectamenteTest() {
-        uf.unionSinRaiz("A", "B");
+        unionf.unionSinRaiz("A", "B");
         
-        assertEquals("B", uf.find("A"));
-        assertEquals("B", uf.find("B"));
+        assertEquals("B", unionf.find("A"));
+        assertEquals("B", unionf.find("B"));
     }
 
     @Test
     public void verificarUnionSinRaizCreaCadenasTest() {
-        uf.unionSinRaiz("A", "B");
-        uf.unionSinRaiz("B", "C");
+        unionf.unionSinRaiz("A", "B");
+        unionf.unionSinRaiz("B", "C");
 
-        assertEquals("C", uf.find("A"));
-        assertEquals("C", uf.find("B"));
-        assertEquals("C", uf.find("C"));
+        assertEquals("C", unionf.find("A"));
+        assertEquals("C", unionf.find("B"));
+        assertEquals("C", unionf.find("C"));
     }
 
     @Test
     public void verificarUnionConRaizUneDirectamenteTest() {
-        uf.unionConRaiz("A", "B");
+        unionf.unionConRaiz("A", "B");
 
-        assertEquals("B", uf.find("A"));
-        assertEquals("B", uf.find("B"));
+        assertEquals("B", unionf.find("A"));
+        assertEquals("B", unionf.find("B"));
     }
 
     @Test
     public void unionesRepetidasNoRompenTest() {
-        uf.unionSinRaiz("A", "B");
-        uf.unionSinRaiz("A", "B");
+        unionf.unionSinRaiz("A", "B");
+        unionf.unionSinRaiz("A", "B");
 
-        assertEquals("B", uf.find("A"));
+        assertEquals("B", unionf.find("A"));
     }
 
     @Test
     public void unionDeDosRamasSeparadasTest() {
-        uf.unionSinRaiz("A", "B");
-        uf.unionSinRaiz("C", "D");
-        uf.unionSinRaiz("B", "D");
+        unionf.unionSinRaiz("A", "B");
+        unionf.unionSinRaiz("C", "D");
+        unionf.unionSinRaiz("B", "D");
 
-        assertEquals("D", uf.find("A"));
-        assertEquals("D", uf.find("B"));
-        assertEquals("D", uf.find("C"));
-        assertEquals("D", uf.find("D"));
+        assertEquals("D", unionf.find("A"));
+        assertEquals("D", unionf.find("B"));
+        assertEquals("D", unionf.find("C"));
+        assertEquals("D", unionf.find("D"));
     }
 }
