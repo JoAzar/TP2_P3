@@ -14,9 +14,7 @@ public class Usuario {
 		_nombre = nombre;
 		_gustos = gustos;
 	}
-	    
 	
-	//ACÁ SE SACA EL CALCULO DE LA SIMILARIDAD QUE ESTÁ ASOCIADO CON agruparUsuariosPorSimilitud() DEL PRESENTER
 	public int calculoSimilaridad(Usuario usuario) {
 	    int similaridad = 0;
 	    String[] generos = {"rock", "tango", "folclore", "urbano"};

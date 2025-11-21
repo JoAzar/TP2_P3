@@ -14,7 +14,6 @@ import java.awt.event.ActionEvent;
 public class View extends JFrame{
 	private ViewListener _listener;
 	private JTextField _fieldNombre;
-	private JTextArea _panelGrupos;
     private JPanel panelResultado;
 
 	
@@ -28,17 +27,6 @@ public class View extends JFrame{
 		setBounds(110, 110, 708, 575); 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().setLayout(null);
-		
-		_panelGrupos = new JTextArea();
-	    _panelGrupos.setBackground(Color.BLACK);
-	    JScrollPane scroll = new JScrollPane(_panelGrupos);
-	    scroll.setBounds(270, 10, 410, 480);
-	    getContentPane().add(scroll);
-	    _panelGrupos.setEditable(false);
-	    _panelGrupos.setForeground(Color.WHITE);
-	    _panelGrupos.setFont(new Font("Consolas", Font.PLAIN, 14));
-	    _panelGrupos.setLineWrap(true);
-	    _panelGrupos.setWrapStyleWord(true);
 	    
 		_fieldNombre = new JTextField();
 		_fieldNombre.setBounds(46, 68, 162, 20);
@@ -173,6 +161,30 @@ public class View extends JFrame{
 		});
 	}
 	
+	private void reestablecerBotones(JSpinner spinnerTango, JSpinner spinnerUrbano, JSpinner spinnerRock,
+			JSpinner spinnerFolclore) {
+		spinnerTango.setModel(new SpinnerNumberModel(1, 1, 5, 1));
+		spinnerUrbano.setModel(new SpinnerNumberModel(1, 1, 5, 1));
+		spinnerRock.setModel(new SpinnerNumberModel(1, 1, 5, 1));
+		spinnerFolclore.setModel(new SpinnerNumberModel(1, 1, 5, 1));
+	}
+	
+	private void actualizarVistaUsuarios() {
+	    JPanel panelUsuarios = new JPanel();
+	    panelUsuarios.setLayout(new BoxLayout(panelUsuarios, BoxLayout.Y_AXIS));
+	    List<Usuario> usuarios = _listener.getUsuarios();
+	    panelUsuarios.removeAll();
+	    for(Usuario usuario : usuarios) {
+	        JLabel label = new JLabel(usuario.getNombre());
+	        label.setFont(new Font("Arial", Font.PLAIN, 14));
+	        panelUsuarios.add(label);
+	    }
+	    panelResultado.removeAll();
+	    panelResultado.add(panelUsuarios);
+	    panelResultado.revalidate();
+	    panelResultado.repaint();
+	}
+	
 	private void reiniciarYLimpiarTodo(JButton botonDeNuevoUsuario, JButton botonDeReiniciar,
 			JButton botonDeEjecutar, JSpinner spinnerTango, JSpinner spinnerUrbano, JSpinner spinnerRock,
 			JSpinner spinnerFolclore) {
@@ -192,20 +204,62 @@ public class View extends JFrame{
 		 });
 	}
 	
-	private void reestablecerBotones(JSpinner spinnerTango, JSpinner spinnerUrbano, JSpinner spinnerRock,
-			JSpinner spinnerFolclore) {
-		spinnerTango.setModel(new SpinnerNumberModel(1, 1, 5, 1));
-		spinnerUrbano.setModel(new SpinnerNumberModel(1, 1, 5, 1));
-		spinnerRock.setModel(new SpinnerNumberModel(1, 1, 5, 1));
-		spinnerFolclore.setModel(new SpinnerNumberModel(1, 1, 5, 1));
-	}
-	
 	private void ejecutarAlgoritmo(JButton botonDeEjecutar) {
 		botonDeEjecutar.addActionListener(e -> _listener.ejecutarAlgoritmo());
 	}
 	
 	public void calcularPromedioGustosMusicales(JButton botonDePromedio) {
 		botonDePromedio.addActionListener(e -> {if(_listener != null) _listener.calcularPromedioInteres();});
+	}
+	
+    public void mostrarGrupos(Map<Integer, List<Usuario>> gruposDeUsuarios) {
+        panelResultado.removeAll();
+        JPanel panelDeGrupos = new JPanel();
+        configuracionDeTamanioDelPanelExternoDeGrupos(panelDeGrupos);
+
+        for(Map.Entry<Integer, List<Usuario>> entry : gruposDeUsuarios.entrySet()) {
+            JPanel grupoPanel = new JPanel();
+            configuracionDeTamanioDelPanelInternoDeGrupo(grupoPanel);
+            grupoPanel.setBorder(BorderFactory.createTitledBorder("Grupo " + entry.getKey()));
+            grupoPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, grupoPanel.getPreferredSize().height));
+            
+            for(Usuario usuario : entry.getValue()) {
+            	JLabel nombreLbl = new JLabel(usuario.getNombre());
+                nombreLbl.setFont(new Font("Arial", Font.PLAIN, 14));
+                nombreLbl.setAlignmentX(Component.LEFT_ALIGNMENT);
+                nombreLbl.setMaximumSize(new Dimension(Integer.MAX_VALUE, nombreLbl.getPreferredSize().height));
+                grupoPanel.add(nombreLbl);
+            }
+            grupoPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, grupoPanel.getPreferredSize().height));
+            panelDeGrupos.add(grupoPanel);
+            panelDeGrupos.add(Box.createVerticalStrut(8));
+        }
+
+        JScrollPane scrollPane = new JScrollPane(panelDeGrupos);
+        scrollPane.setPreferredSize(null);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        
+        panelResultado.setLayout(new BorderLayout());
+        panelResultado.add(scrollPane, BorderLayout.CENTER);
+        panelResultado.revalidate();
+        panelResultado.repaint();
+    }
+    
+	public void mostrarPromedioInteres(Map<String, Double> promedios) {
+		StringBuilder mensaje = new StringBuilder("Promedio de intereses por género\n");
+	    for(Map.Entry<String, Double> entry : promedios.entrySet()) {
+	        mensaje.append(entry.getKey())
+	               .append(": ")
+	               .append(String.format("%.2f", entry.getValue()))
+	               .append("\n");
+	    }
+	    javax.swing.JOptionPane.showMessageDialog(
+	        null, 
+	        mensaje.toString(), 
+	        "Promedio de Interes de todos los usuarios", 
+	        javax.swing.JOptionPane.INFORMATION_MESSAGE
+	    );
 	}
 	
 	private void noPermitirSenialarSobreElPanel(JTextPane panelSeleccionado) {
@@ -294,69 +348,6 @@ public class View extends JFrame{
 		    }
 		});
 	}
-	
-	private void actualizarVistaUsuarios() {
-	    JPanel panelUsuarios = new JPanel();
-	    panelUsuarios.setLayout(new BoxLayout(panelUsuarios, BoxLayout.Y_AXIS));
-	    List<Usuario> usuarios = _listener.getUsuarios();
-	    panelUsuarios.removeAll();
-	    for(Usuario usuario : usuarios) {
-	        JLabel label = new JLabel(usuario.getNombre());
-	        label.setFont(new Font("Arial", Font.PLAIN, 14));
-	        panelUsuarios.add(label);
-	    }
-	    panelResultado.removeAll();
-	    panelResultado.add(panelUsuarios);
-	    panelResultado.revalidate();
-	    panelResultado.repaint();
-	}
-
-
-	private void mostrar() {
-		setVisible(true);
-	}
-	
-	public void avisoReinicioCorrecto(String mensaje) {
-	    JOptionPane.showMessageDialog(this, mensaje);
-	}
-	
-    public void crearListener(ViewListener listener) {
-        this._listener = listener;
-    }
-    
-    public void mostrarGrupos(Map<Integer, List<Usuario>> gruposDeUsuarios) {
-        panelResultado.removeAll();
-        JPanel panelDeGrupos = new JPanel();
-        configuracionDeTamanioDelPanelExternoDeGrupos(panelDeGrupos);
-
-        for(Map.Entry<Integer, List<Usuario>> entry : gruposDeUsuarios.entrySet()) {
-            JPanel grupoPanel = new JPanel();
-            configuracionDeTamanioDelPanelInternoDeGrupo(grupoPanel);
-            grupoPanel.setBorder(BorderFactory.createTitledBorder("Grupo " + entry.getKey()));
-            grupoPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, grupoPanel.getPreferredSize().height));
-            
-            for(Usuario usuario : entry.getValue()) {
-            	JLabel nombreLbl = new JLabel(usuario.getNombre());
-                nombreLbl.setFont(new Font("Arial", Font.PLAIN, 14));
-                nombreLbl.setAlignmentX(Component.LEFT_ALIGNMENT);
-                nombreLbl.setMaximumSize(new Dimension(Integer.MAX_VALUE, nombreLbl.getPreferredSize().height));
-                grupoPanel.add(nombreLbl);
-            }
-            grupoPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, grupoPanel.getPreferredSize().height));
-            panelDeGrupos.add(grupoPanel);
-            panelDeGrupos.add(Box.createVerticalStrut(8));
-        }
-
-        JScrollPane scrollPane = new JScrollPane(panelDeGrupos);
-        scrollPane.setPreferredSize(null);
-        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        
-        panelResultado.setLayout(new BorderLayout());
-        panelResultado.add(scrollPane, BorderLayout.CENTER);
-        panelResultado.revalidate();
-        panelResultado.repaint();
-    }
 
     public void configuracionDeTamanioDelPanelExternoDeGrupos(JPanel panelDeGrupos) {
         panelDeGrupos.setLayout(new BoxLayout(panelDeGrupos, BoxLayout.Y_AXIS));
@@ -370,22 +361,18 @@ public class View extends JFrame{
         grupoPanel.setLayout(new BoxLayout(grupoPanel, BoxLayout.Y_AXIS));
         grupoPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     }
-
-	public void mostrarPromedioInteres(Map<String, Double> promedios) {
-		StringBuilder mensaje = new StringBuilder("Promedio de intereses por género\n");
-	    for(Map.Entry<String, Double> entry : promedios.entrySet()) {
-	        mensaje.append(entry.getKey())
-	               .append(": ")
-	               .append(String.format("%.2f", entry.getValue()))
-	               .append("\n");
-	    }
-	    javax.swing.JOptionPane.showMessageDialog(
-	        null, 
-	        mensaje.toString(), 
-	        "Promedio de Interes de todos los usuarios", 
-	        javax.swing.JOptionPane.INFORMATION_MESSAGE
-	    );
+    
+	private void mostrar() {
+		setVisible(true);
 	}
+	
+	public void avisoReinicioCorrecto(String mensaje) {
+	    JOptionPane.showMessageDialog(this, mensaje);
+	}
+	
+    public void crearListener(ViewListener listener) {
+        this._listener = listener;
+    }
     
     public void mostrarMensaje(String mensaje) {
     	JOptionPane.showMessageDialog(this, mensaje);

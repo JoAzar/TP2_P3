@@ -7,8 +7,8 @@ public interface ViewListener {
 	boolean hayUsuariosSuficientes();
 	void modificarCantGrupos(String texto);
     void ejecutarAlgoritmo();
-    void reiniciarSistema();
-    boolean sePuedeHabilitarReinicio();
-	List<Usuario> getUsuarios();
 	void calcularPromedioInteres();
+    boolean sePuedeHabilitarReinicio();
+    void reiniciarSistema();
+	List<Usuario> getUsuarios();
 }

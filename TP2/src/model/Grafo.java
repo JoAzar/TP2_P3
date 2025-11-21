@@ -20,6 +20,17 @@ public class Grafo<T> {
     		_vertices.add(vertice);
     	}
     }
+    
+	public void crearGrafoCompleto(BiFunction<T, T, Integer> generadorDePeso) {
+	    for (int i = 0; i < _vertices.size(); i++) {
+	        for (int j = i + 1; j < _vertices.size(); j++) {
+	            T primerVer = _vertices.get(i);
+	            T segundoVer = _vertices.get(j);
+	            int peso = generadorDePeso.apply(primerVer, segundoVer);
+	            agregarArista(primerVer, segundoVer, peso);
+	        }
+	    }
+    }
 
     public void agregarArista(T origen, T destino, int peso) {
         if(!existeArista(origen, destino)) {
@@ -34,17 +45,6 @@ public class Grafo<T> {
         	}
         }
         return false;
-    }
-    
-	public void crearGrafoCompleto(BiFunction<T, T, Integer> generadorDePeso) {
-	    for (int i = 0; i < _vertices.size(); i++) {
-	        for (int j = i + 1; j < _vertices.size(); j++) {
-	            T primerVer = _vertices.get(i);
-	            T segundoVer = _vertices.get(j);
-	            int peso = generadorDePeso.apply(primerVer, segundoVer);
-	            agregarArista(primerVer, segundoVer, peso);
-	        }
-	    }
     }
 
 	public List<T> getVertices() {

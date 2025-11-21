@@ -30,7 +30,7 @@ public class UnionFind<T> {
     	padre.put(primeraRaiz, segundaRaiz);
     }
     
-    Map<T, T> getPadre(){
+    public Map<T, T> getPadre(){
     	return new HashMap<>(padre);
     }
 }

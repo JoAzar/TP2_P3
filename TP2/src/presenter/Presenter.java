@@ -29,6 +29,15 @@ public class Presenter implements ViewListener {
         _usuarios.add(usuario);
     }
     
+    private Map<String, Integer> mapDeGustos(int tango, int folclore, int rock, int urbano) {
+    	Map<String, Integer> gustos = new HashMap<>();
+    	gustos.put("tango", tango);
+    	gustos.put("folclore", folclore);
+    	gustos.put("rock", rock);
+    	gustos.put("urbano", urbano);
+    	return gustos;
+	}
+    
     @Override
     public void ejecutarAlgoritmo() {
     	Grafo<Usuario> grafo = crearGrafoCompleto();
@@ -37,29 +46,17 @@ public class Presenter implements ViewListener {
     	_vista.mostrarGrupos(gruposResultantes);
     }
     
-    // ESTO TENGO QUE VER QUÉ HACE (CAPAZ SE BORRA)
-//    public Map<Integer, List<Usuario>> agruparUsuariosPorSimilitud() {
-//        Map<Integer, List<Usuario>> gruposDeUsuarios = new HashMap<>();
-//        List<Usuario> usuariosPorAgrupar = new ArrayList<>(_usuarios);
-//        int grupoId = 1;
-//        while (!usuariosPorAgrupar.isEmpty()) {
-//            Usuario usuarioBase = usuariosPorAgrupar.remove(0);
-//            List<Usuario> grupo = new ArrayList<>();
-//            grupo.add(usuarioBase);
-//            for(Iterator<Usuario> iter = usuariosPorAgrupar.iterator(); iter.hasNext();) {
-//                Usuario usuarioComparado = iter.next();
-//                
-//                //HAY QUE VER EN EL PDF DEL TP CUÁNTA SIMILARIDAD TIENE QUE TENER UN SUSUARIO CON OTRO DE AHI ES 3 CAMBIARLO POR OTRO VALOR EL MAX ES 16
-//                if(usuarioBase.calculoSimilaridad(usuarioComparado) <= 1) {
-//                    grupo.add(usuarioComparado);
-//                    iter.remove();
-//                }
-//            }
-//            gruposDeUsuarios.put(grupoId++, grupo);
-//        }
-//        return gruposDeUsuarios;
-//    }
-//    
+	public Grafo<Usuario> crearGrafoCompleto() {
+		Grafo<Usuario> grafo = new Grafo<>();
+		
+	    for(Usuario usuario : _usuarios) {
+	        grafo.agregarVertice(usuario);
+	    }
+	    grafo.crearGrafoCompleto((u1, u2) -> u1.calculoSimilaridad(u2));
+	    
+		return grafo;
+	}
+      
     @Override
     public void calcularPromedioInteres() {
         Map<String, Double> promedios = calcularPromedioInteresPorGenero();
@@ -79,40 +76,9 @@ public class Presenter implements ViewListener {
         }
         Map<String, Double> promedios = new HashMap<>();
         for(String genero : sumas.keySet()) {
-            promedios.put(genero, sumas.get(genero) / conteos.get(genero));
+            promedios.put(genero.toUpperCase(), sumas.get(genero) / conteos.get(genero));
         }
         return promedios;
-    }
-    
-    @Override
-    public void reiniciarSistema() {
-    	_usuarios.clear();	
-    }
-    
-	public Grafo<Usuario> crearGrafoCompleto() {
-		Grafo<Usuario> grafo = new Grafo<>();
-		
-	    for(Usuario usuario : _usuarios) {
-	        grafo.agregarVertice(usuario);
-	    }
-	    grafo.crearGrafoCompleto((u1, u2) -> u1.calculoSimilaridad(u2));
-	    
-		return grafo;
-	}
-
-    private Map<String, Integer> mapDeGustos(int tango, int folclore, int rock, int urbano) {
-    	Map<String, Integer> gustos = new HashMap<>();
-    	gustos.put("tango", tango);
-    	gustos.put("folclore", folclore);
-    	gustos.put("rock", rock);
-    	gustos.put("urbano", urbano);
-    	return gustos;
-	}
-    
-    @Override
-	public boolean hayUsuariosSuficientes() {
-    	if(_usuarios.size() >= 2) return true;
-    	return false;
     }
     
 	@Override
@@ -162,6 +128,17 @@ public class Presenter implements ViewListener {
     	}
     	
     	return true;
+    }
+    
+    @Override
+    public void reiniciarSistema() {
+    	_usuarios.clear();	
+    }
+    
+    @Override
+	public boolean hayUsuariosSuficientes() {
+    	if(_usuarios.size() >= 2) return true;
+    	return false;
     }
     
     @Override
