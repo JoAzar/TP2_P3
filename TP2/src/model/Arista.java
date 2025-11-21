@@ -17,10 +17,10 @@ public class Arista<T> implements Comparable<Arista<T>>{
     
     @Override
     public boolean equals(Object obj) {
-        if(this == obj) return true;
-        if(!(obj instanceof Arista)) return false;
+        if (this == obj) return true;
+        if (!(obj instanceof Arista)) return false;
         Arista<?> a = (Arista<?>) obj;
-        return _origen.equals(a._origen) && _destino.equals(a._destino);
+        return (_origen.equals(a._origen) && _destino.equals(a._destino)) || (_origen.equals(a._destino) && _destino.equals(a._origen));
     }
 
     @Override

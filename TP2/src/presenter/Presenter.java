@@ -15,7 +15,7 @@ public class Presenter implements ViewListener {
 	private List<Usuario> _usuarios;
 	private int _cantGrupos = 2;
 	private AgrupacionDeUsuarios _agrupador = new AgrupacionDeUsuarios();
-    
+
     public void inicializarInterfazPresenter(View vista) {
         _vista = vista;
         _vista.crearListener(this);
@@ -40,19 +40,15 @@ public class Presenter implements ViewListener {
     @Override
     public void ejecutarAlgoritmo() {
     	Grafo<Usuario> grafo = crearGrafoCompleto();
-
     	Map<Integer, List<Usuario>> gruposResultantes = _agrupador.crearComponentesConexas(grafo, _cantGrupos);
     	_vista.mostrarGrupos(gruposResultantes);
     }
     
 	public Grafo<Usuario> crearGrafoCompleto() {
 		Grafo<Usuario> grafo = new Grafo<>();
-		
-	    for(Usuario usuario : _usuarios) {
+	    for(Usuario usuario : _usuarios)
 	        grafo.agregarVertice(usuario);
-	    }
 	    grafo.crearGrafoCompleto((u1, u2) -> u1.calculoSimilaridad(u2));
-	    
 		return grafo;
 	}
       
@@ -86,14 +82,11 @@ public class Presenter implements ViewListener {
     		_cantGrupos = 2;
     		return;
     	}
-    	
     	if(!datoIngresadoNoEsNum(input)) {
     		_cantGrupos = 2;
     		return;
     	}
-    	
     	int cantGrupos = Integer.parseInt(input);
-    	
     	if(!cantGruposEsValido(cantGrupos)){
     		_cantGrupos = 2;
     		return;
@@ -115,17 +108,9 @@ public class Presenter implements ViewListener {
     
     private boolean cantGruposEsValido(int cantGrupos) {
     	int cantUsuarios = 0;
-    	if(_usuarios != null) {
-    		cantUsuarios = _usuarios.size();
-    	}
-    	
-    	if(cantGrupos < 2) {
-    		return false;
-    	}
-    	if(cantUsuarios > 0 && cantUsuarios < cantGrupos) {
-    		return false;
-    	}
-    	
+    	if(_usuarios != null) cantUsuarios = _usuarios.size();
+    	if(cantGrupos < 2) return false;
+    	if(cantUsuarios > 0 && cantUsuarios < cantGrupos) return false;
     	return true;
     }
     
